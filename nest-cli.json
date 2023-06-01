@@ -3,6 +3,18 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "webpack": true
+  },
+  "projects": {
+    "good-place": {
+      "type": "library",
+      "root": "libs/good-place",
+      "entryFile": "index",
+      "sourceRoot": "libs/good-place/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/good-place/tsconfig.lib.json"
+      }
+    }
   }
 }
