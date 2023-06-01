@@ -1,7 +1,9 @@
 import { Book } from '@app/good-place/domain/book';
 import { BookRepository } from '../book.repository';
 import { DateProvider } from '../date.provider';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class AddBookUseCase {
   constructor(
     private readonly bookRepository: BookRepository,

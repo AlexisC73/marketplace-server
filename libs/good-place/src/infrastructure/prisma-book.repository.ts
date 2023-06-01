@@ -1,7 +1,9 @@
+import { Injectable } from '@nestjs/common';
 import { BookRepository } from '../application/book.repository';
 import { Book } from '../domain/book';
 import { PrismaClient } from '@prisma/client';
 
+@Injectable()
 export class PrismaBookRepository implements BookRepository {
   constructor(private readonly prisma: PrismaClient) {}
   async addBook(book: Book): Promise<void> {

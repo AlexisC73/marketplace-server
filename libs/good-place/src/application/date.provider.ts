@@ -1,3 +1,3 @@
-export interface DateProvider {
-  getNow: () => Date;
+export abstract class DateProvider {
+  abstract getNow: () => Date;
 }
