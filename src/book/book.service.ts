@@ -2,7 +2,7 @@ import {
   AddBookCommand,
   AddBookUseCase,
 } from '@app/good-place/application/usecases/add-book.usecase';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { AddBookDTO } from './dto/add-book-dto';
 import { createId } from '@paralleldrive/cuid2';
 
@@ -21,7 +21,10 @@ export class BookService {
       price: addBookDto.price,
       seller: 'Recuperer depuis le guard plus tard',
     };
-    await this.addBookUseCase.handle(addBookCommand);
-    return Promise.resolve();
+    try {
+      await this.addBookUseCase.handle(addBookCommand);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 }

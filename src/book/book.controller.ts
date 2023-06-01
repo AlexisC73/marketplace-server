@@ -14,10 +14,6 @@ export class BookController {
 
   @Post()
   async addBook(@Body() addBookDTO: AddBookDTO) {
-    try {
-      await this.bookService.addBook(addBookDTO);
-    } catch (err) {
-      throw new BadRequestException(err.message);
-    }
+    return this.bookService.addBook(addBookDTO);
   }
 }
