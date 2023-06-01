@@ -5,6 +5,7 @@ import {
 import { Book } from '../domain/book';
 import { InMemoryBookRepository } from '../infrastructure/in-memory-book.repository';
 import { StubDateProvider } from '../infrastructure/stub-date.provider';
+import { bookBuilder } from './bookBuilder';
 
 describe('AddBookUseCase', () => {
   let fixture: Fixture;
@@ -16,28 +17,30 @@ describe('AddBookUseCase', () => {
     fixture.givenNowIs(new Date('2023-06-01T12:00:00Z'));
 
     await fixture.whenAUserAddBook({
-      id: 'testing-id',
+      id: 'book-id',
       title: 'The Lord of the Rings',
       author: 'J. R. R. Tolkien',
       price: 10,
       publicationDate: new Date('1954-07-29T12:00:00Z'),
       description: 'Description of the book',
-      imageUrl: 'testing-url',
-      owner: 'testing-owner',
+      imageUrl: 'http://testurl.com/',
+      owner: 'Alice',
     });
 
-    fixture.thenBookShouldBe({
-      id: 'testing-id',
-      title: 'The Lord of the Rings',
-      author: 'J. R. R. Tolkien',
-      price: 10,
-      publicationDate: new Date('1954-07-29T12:00:00Z'),
-      description: 'Description of the book',
-      createdAt: new Date('2023-06-01T12:00:00Z'),
-      imageUrl: 'testing-url',
-      owner: 'testing-owner',
-      published: false,
-    });
+    fixture.thenBookShouldBe(
+      bookBuilder()
+        .withId('book-id')
+        .withTitle('The Lord of the Rings')
+        .withAuthor('J. R. R. Tolkien')
+        .withPrice(10)
+        .withPublicationDate(new Date('1954-07-29T12:00:00Z'))
+        .withDescription('Description of the book')
+        .withImageUrl('http://testurl.com/')
+        .withOwner('Alice')
+        .withPublished(false)
+        .withCreatedAt(new Date('2023-06-01T12:00:00Z'))
+        .build(),
+    );
   });
 });
 
