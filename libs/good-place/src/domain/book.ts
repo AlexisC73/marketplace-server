@@ -8,5 +8,5 @@ export interface Book {
   description: string;
   createdAt: Date;
   published: boolean;
-  owner: string;
+  seller: string;
 }

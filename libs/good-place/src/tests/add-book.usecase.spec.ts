@@ -24,7 +24,7 @@ describe('AddBookUseCase', () => {
       publicationDate: new Date('1954-07-29T12:00:00Z'),
       description: 'Description of the book',
       imageUrl: 'http://testurl.com/',
-      owner: 'Alice',
+      seller: 'Alice',
     });
 
     fixture.thenBookShouldBe(
@@ -36,7 +36,7 @@ describe('AddBookUseCase', () => {
         .withPublicationDate(new Date('1954-07-29T12:00:00Z'))
         .withDescription('Description of the book')
         .withImageUrl('http://testurl.com/')
-        .withOwner('Alice')
+        .withSeller('Alice')
         .withPublished(false)
         .withCreatedAt(new Date('2023-06-01T12:00:00Z'))
         .build(),

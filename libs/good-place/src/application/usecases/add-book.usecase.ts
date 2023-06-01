@@ -15,7 +15,7 @@ export class AddBookUseCase {
       author: addBookCommand.author,
       price: addBookCommand.price,
       publicationDate: addBookCommand.publicationDate,
-      owner: addBookCommand.owner,
+      seller: addBookCommand.seller,
       description: addBookCommand.description,
       imageUrl: addBookCommand.imageUrl,
       createdAt: this.dateProvider.getNow(),
@@ -33,5 +33,5 @@ export type AddBookCommand = {
   publicationDate: Date;
   imageUrl: string;
   description: string;
-  owner: string;
+  seller: string;
 };

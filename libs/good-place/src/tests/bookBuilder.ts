@@ -9,7 +9,7 @@ export const bookBuilder = ({
   description = 'testing description',
   createdAt = new Date('2021-06-01T12:00:00Z'),
   imageUrl = 'testing url',
-  owner = 'testing owner',
+  seller = 'testing owner',
   published = false,
 }: {
   id?: string;
@@ -20,7 +20,7 @@ export const bookBuilder = ({
   description?: string;
   createdAt?: Date;
   imageUrl?: string;
-  owner?: string;
+  seller?: string;
   published?: boolean;
 } = {}) => {
   const props: Book = {
@@ -32,7 +32,7 @@ export const bookBuilder = ({
     description,
     createdAt,
     imageUrl,
-    owner,
+    seller,
     published,
   };
   return {
@@ -46,7 +46,7 @@ export const bookBuilder = ({
       bookBuilder({ ...props, description }),
     withCreatedAt: (createdAt: Date) => bookBuilder({ ...props, createdAt }),
     withImageUrl: (imageUrl: string) => bookBuilder({ ...props, imageUrl }),
-    withOwner: (owner: string) => bookBuilder({ ...props, owner }),
+    withSeller: (seller: string) => bookBuilder({ ...props, seller }),
     withPublished: (published: boolean) => bookBuilder({ ...props, published }),
     build: (): Book => props,
   };
