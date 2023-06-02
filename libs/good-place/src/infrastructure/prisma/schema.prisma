@@ -22,3 +22,19 @@ model Book {
   seller          String
   createdAt       DateTime
 }
+
+model User {
+  id        String   @id
+  name      String
+  email     String   @unique
+  password  String
+  role      UserRole @default(CLIENT)
+  createdAt DateTime
+}
+
+enum UserRole {
+  ADMIN
+  MODERATOR
+  CLIENT
+  SELLER
+}

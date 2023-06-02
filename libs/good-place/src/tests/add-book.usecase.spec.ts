@@ -27,7 +27,7 @@ describe('AddBookUseCase', () => {
       seller: 'Alice',
     });
 
-    await fixture.thenBookShouldBe(
+    fixture.thenBookShouldBe(
       bookBuilder()
         .withId('book-id')
         .withTitle('The Lord of the Rings')
@@ -55,8 +55,10 @@ const createFixture = () => {
     async whenAUserAddBook(addBookCommand: AddBookCommand) {
       return addBookUseCase.handle(addBookCommand);
     },
-    async thenBookShouldBe(expectedBook: Book) {
-      const inDbBook = await bookRepository.getBookById(expectedBook.id);
+    thenBookShouldBe(expectedBook: Book) {
+      const inDbBook = bookRepository.book.find(
+        (b) => b.id === expectedBook.id,
+      );
       expect(expectedBook).toEqual(inDbBook);
     },
   };

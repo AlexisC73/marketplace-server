@@ -36,7 +36,7 @@ describe('PrismaBookRepository', () => {
     });
 
     await execAsync(
-      `set DATABASE_URL=${databaseUrl} && npx prisma migrate dev --name testing`,
+      `set DATABASE_URL=${databaseUrl} && npx prisma migrate dev`,
     );
 
     return prismaClient.$connect();
