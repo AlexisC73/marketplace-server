@@ -1,7 +1,9 @@
+import { Injectable } from '@nestjs/common';
 import { Role, User } from '../../domain/user';
 import { DateProvider } from '../date.provider';
 import { UserRepository } from '../user.repository';
 
+@Injectable()
 export class SignupUseCase {
   constructor(
     private readonly userRepository: UserRepository,

@@ -4,6 +4,7 @@ import { AddBookUseCase } from './application/usecases/add-book.usecase';
 import { PrismaClient } from '@prisma/client';
 import { DateProvider } from './application/date.provider';
 import { DeleteBookUseCase } from './application/usecases/delete-book.usecase';
+import { SignupUseCase } from './application/usecases/signup.client.usecase';
 
 @Global()
 @Module({
@@ -21,11 +22,12 @@ export class GoodPlaceModule {
       providers: [
         AddBookUseCase,
         DeleteBookUseCase,
+        SignupUseCase,
         { provide: BookRepository, useClass: providers.BookRepository },
         { provide: PrismaClient, useClass: providers.PrismaClient },
         { provide: DateProvider, useClass: providers.DateProvider },
       ],
-      exports: [AddBookUseCase, DeleteBookUseCase],
+      exports: [AddBookUseCase, DeleteBookUseCase, SignupUseCase],
     };
   }
 }
