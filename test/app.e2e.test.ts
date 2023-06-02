@@ -11,9 +11,7 @@ import {
 } from 'testcontainers';
 import { promisify } from 'util';
 import { AppModule } from '../src/app.module';
-import { BookModule } from 'src/book/book.module';
 import { PrismaBookRepository } from '@app/good-place/infrastructure/prisma-book.repository';
-import { Book } from '@app/good-place/domain/book';
 
 const asyncExec = promisify(exec);
 

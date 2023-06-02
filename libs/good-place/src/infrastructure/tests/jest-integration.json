@@ -1,0 +1,13 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".integration.test.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "@app/good-place/(.*)": "<rootDir>/../libs/good-place/src/$1",
+    "@app/good-place": "<rootDir>/../libs/good-place/src"
+  }
+}

@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { PrismaBookRepository } from '../infrastructure/prisma-book.repository';
-import { bookBuilder } from './bookBuilder';
+import { PrismaBookRepository } from '../prisma-book.repository';
+import { bookBuilder } from '../../tests/bookBuilder';
 import {
   PostgreSqlContainer,
   StartedPostgreSqlContainer,
@@ -8,7 +8,7 @@ import {
 
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { Book } from '../domain/book';
+import { Book } from '../../domain/book';
 
 const execAsync = promisify(exec);
 

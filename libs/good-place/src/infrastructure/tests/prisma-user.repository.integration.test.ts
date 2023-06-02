@@ -6,8 +6,8 @@ import {
 
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { PrismaUserRepository } from '../infrastructure/prisma-user.repository';
-import { userBuilder } from './userBuilder';
+import { PrismaUserRepository } from '../prisma-user.repository';
+import { userBuilder } from '../../tests/userBuilder';
 
 const execAsync = promisify(exec);
 
