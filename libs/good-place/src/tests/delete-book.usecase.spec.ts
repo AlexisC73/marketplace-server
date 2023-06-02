@@ -13,7 +13,7 @@ describe('DeleteBookUseCase', () => {
   it('should delete book', async () => {
     fixture.givenBookExists([bookBuilder().withId('1').build()]);
     await fixture.whenUserDeleteBook('1');
-    fixture.thenBookShouldNotExist('1');
+    await fixture.thenBookShouldNotExist('1');
   });
 });
 
@@ -29,8 +29,9 @@ const createFixture = () => {
     whenUserDeleteBook: async (id: string) => {
       await deleteBookUseCase.handle(id);
     },
-    thenBookShouldNotExist: (id: string) => {
-      expect(bookRepository.getBookWithId(id)).toBeUndefined();
+    thenBookShouldNotExist: async (id: string) => {
+      const inDbBook = await bookRepository.getBookById(id);
+      expect(inDbBook).toBeUndefined();
     },
   };
 };

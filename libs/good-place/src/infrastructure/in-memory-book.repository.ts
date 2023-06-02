@@ -14,7 +14,7 @@ export class InMemoryBookRepository implements BookRepository {
     return Promise.resolve();
   }
 
-  getBookWithId(id: string): Book {
+  async getBookById(id: string): Promise<Book> {
     return this.book.find((book) => book.id === id);
   }
 

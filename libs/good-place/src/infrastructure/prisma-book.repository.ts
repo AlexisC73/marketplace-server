@@ -33,4 +33,12 @@ export class PrismaBookRepository implements BookRepository {
     });
     return Promise.resolve();
   }
+
+  async getBookById(id: string): Promise<Book> {
+    return this.prisma.book.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
 }

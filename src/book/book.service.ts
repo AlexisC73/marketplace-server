@@ -5,10 +5,14 @@ import {
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { AddBookDTO } from './dto/add-book-dto';
 import { createId, isCuid } from '@paralleldrive/cuid2';
+import { DeleteBookUseCase } from '@app/good-place/application/usecases/delete-book.usecase';
 
 @Injectable()
 export class BookService {
-  constructor(private readonly addBookUseCase: AddBookUseCase) {}
+  constructor(
+    private readonly addBookUseCase: AddBookUseCase,
+    private readonly deleteBookUseCase: DeleteBookUseCase,
+  ) {}
 
   async add(addBookDto: AddBookDTO) {
     const addBookCommand: AddBookCommand = {
@@ -23,6 +27,15 @@ export class BookService {
     };
     try {
       await this.addBookUseCase.handle(addBookCommand);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
+  }
+
+  async delete(id: string) {
+    if (!isCuid(id)) throw new BadRequestException('Invalid id');
+    try {
+      await this.deleteBookUseCase.handle(id);
     } catch (err) {
       throw new BadRequestException(err.message);
     }
