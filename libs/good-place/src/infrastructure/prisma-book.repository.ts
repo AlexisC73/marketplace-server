@@ -6,6 +6,7 @@ import { PrismaClient } from '@prisma/client';
 @Injectable()
 export class PrismaBookRepository implements BookRepository {
   constructor(private readonly prisma: PrismaClient) {}
+
   async addBook(book: Book): Promise<void> {
     await this.prisma.book.create({
       data: {
@@ -19,6 +20,15 @@ export class PrismaBookRepository implements BookRepository {
         published: book.published,
         seller: book.seller,
         createdAt: book.createdAt,
+      },
+    });
+    return Promise.resolve();
+  }
+
+  async deleteBookById(id: string): Promise<void> {
+    await this.prisma.book.delete({
+      where: {
+        id: id,
       },
     });
     return Promise.resolve();

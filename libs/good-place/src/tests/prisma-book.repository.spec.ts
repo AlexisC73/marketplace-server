@@ -51,7 +51,7 @@ describe('PrismaBookRepository', () => {
     await postgresContainer.stop({ timeout: 1000 });
   }, 10000);
 
-  it('addBook() should ad a book to the database', async () => {
+  it('addBook() should add a book to the database', async () => {
     const bookRepository = new PrismaBookRepository(prismaClient);
 
     await bookRepository.addBook(bookBuilder().withId('prisma-id').build());
@@ -62,5 +62,23 @@ describe('PrismaBookRepository', () => {
     expect(books).toEqual(
       expect.arrayContaining([bookBuilder().withId('prisma-id').build()]),
     );
+  });
+
+  it('deleteBook() should delete book in the database', async () => {
+    const bookRepository = new PrismaBookRepository(prismaClient);
+
+    await prismaClient.book.create({
+      data: bookBuilder().withId('prisma-id').build(),
+    });
+
+    await bookRepository.deleteBookById('prisma-id');
+
+    const searchBook = await prismaClient.book.findUnique({
+      where: {
+        id: 'prisma-id',
+      },
+    });
+
+    expect(searchBook).toBeNull();
   });
 });

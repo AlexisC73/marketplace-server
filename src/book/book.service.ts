@@ -4,13 +4,13 @@ import {
 } from '@app/good-place/application/usecases/add-book.usecase';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { AddBookDTO } from './dto/add-book-dto';
-import { createId } from '@paralleldrive/cuid2';
+import { createId, isCuid } from '@paralleldrive/cuid2';
 
 @Injectable()
 export class BookService {
   constructor(private readonly addBookUseCase: AddBookUseCase) {}
 
-  async addBook(addBookDto: AddBookDTO) {
+  async add(addBookDto: AddBookDTO) {
     const addBookCommand: AddBookCommand = {
       id: createId(),
       title: addBookDto.title,

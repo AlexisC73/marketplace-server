@@ -8,6 +8,6 @@ export class BookController {
 
   @Post()
   async addBook(@Body() addBookDTO: AddBookDTO) {
-    return this.bookService.addBook(addBookDTO);
+    return this.bookService.add(addBookDTO);
   }
 }
