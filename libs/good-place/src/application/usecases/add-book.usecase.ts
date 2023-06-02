@@ -1,4 +1,4 @@
-import { Book } from '@app/good-place/domain/book';
+import { Book } from '../../domain/book';
 import { BookRepository } from '../book.repository';
 import { DateProvider } from '../date.provider';
 import { Injectable } from '@nestjs/common';
@@ -11,7 +11,7 @@ export class AddBookUseCase {
   ) {}
 
   async handle(addBookCommand: AddBookCommand): Promise<void> {
-    const book: Book = {
+    const book: Book = Book.fromData({
       id: addBookCommand.id,
       title: addBookCommand.title,
       author: addBookCommand.author,
@@ -22,7 +22,7 @@ export class AddBookUseCase {
       imageUrl: addBookCommand.imageUrl,
       createdAt: this.dateProvider.getNow(),
       published: false,
-    };
+    });
     return this.bookRepository.addBook(book);
   }
 }

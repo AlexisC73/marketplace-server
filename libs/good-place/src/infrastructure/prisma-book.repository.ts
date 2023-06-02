@@ -34,11 +34,15 @@ export class PrismaBookRepository implements BookRepository {
     return Promise.resolve();
   }
 
-  async getBookById(id: string): Promise<Book> {
-    return this.prisma.book.findUnique({
+  async getBookById(id: string): Promise<Book | undefined> {
+    const fundBook = await this.prisma.book.findUnique({
       where: {
         id,
       },
     });
+
+    if (!fundBook) return Promise.resolve(undefined);
+
+    return Book.fromData(fundBook);
   }
 }

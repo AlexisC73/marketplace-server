@@ -25,6 +25,6 @@ export const userBuilder = ({
     withRole: (_role: Role) => userBuilder({ ...props, role: _role }),
     withCreatedAt: (_createdAt: Date) =>
       userBuilder({ ...props, createdAt: _createdAt }),
-    build: (): User => props,
+    build: (): User => User.fromData(props),
   };
 };

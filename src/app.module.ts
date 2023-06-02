@@ -4,7 +4,7 @@ import { PrismaService } from '@app/good-place/infrastructure/prisma/prisma.serv
 import { RealDateProvider } from '@app/good-place/infrastructure/real-date.provider';
 import { Module } from '@nestjs/common';
 import { BookModule } from './book/book.module';
-import { AddBookUseCase } from '@app/good-place/application/usecases/add-book.usecase';
+import { PrismaUserRepository } from '@app/good-place/infrastructure/prisma-user.repository';
 
 @Module({
   imports: [
@@ -12,6 +12,7 @@ import { AddBookUseCase } from '@app/good-place/application/usecases/add-book.us
       BookRepository: PrismaBookRepository,
       PrismaClient: PrismaService,
       DateProvider: RealDateProvider,
+      UserRepository: PrismaUserRepository,
     }),
     BookModule,
   ],

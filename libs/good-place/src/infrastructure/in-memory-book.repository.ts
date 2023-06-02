@@ -2,7 +2,7 @@ import { BookRepository } from '../application/book.repository';
 import { Book } from '../domain/book';
 
 export class InMemoryBookRepository implements BookRepository {
-  book: Book[] = [];
+  book: Book['data'][] = [];
 
   async addBook(book: Book): Promise<void> {
     this.save(book);
@@ -14,12 +14,16 @@ export class InMemoryBookRepository implements BookRepository {
     return Promise.resolve();
   }
 
-  async getBookById(id: string): Promise<Book> {
-    return this.book.find((book) => book.id === id);
+  async getBookById(id: string): Promise<Book | undefined> {
+    const fundBook = this.book.find((book) => book.id === id);
+    if (!fundBook) {
+      return undefined;
+    }
+    return Book.fromData(fundBook);
   }
 
   private save(book: Book): void {
-    this.book = [...this.book, book];
+    this.book = [...this.book, book.data];
   }
 
   givenBookExists(existingBooks: Book[]) {

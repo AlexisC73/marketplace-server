@@ -23,7 +23,7 @@ export const bookBuilder = ({
   seller?: string;
   published?: boolean;
 } = {}) => {
-  const props: Book = {
+  const props: Book['data'] = {
     id,
     title,
     author,
@@ -48,6 +48,6 @@ export const bookBuilder = ({
     withImageUrl: (imageUrl: string) => bookBuilder({ ...props, imageUrl }),
     withSeller: (seller: string) => bookBuilder({ ...props, seller }),
     withPublished: (published: boolean) => bookBuilder({ ...props, published }),
-    build: (): Book => props,
+    build: (): Book => Book.fromData(props),
   };
 };

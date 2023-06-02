@@ -4,25 +4,33 @@ import {
   IsDateString,
   IsNumber,
   IsNotEmpty,
+  Min,
 } from 'class-validator';
 
 export class AddBookDTO {
   @IsString()
-  @Length(3, 30)
+  @Length(1, 50)
   title: string;
 
   @IsString()
-  @Length(1, 30)
+  @Length(1, 50)
   author: string;
 
   @IsString()
-  @Length(1, 1000)
+  @Length(10, 1000)
   description: string;
 
-  @IsDateString()
+  @IsDateString({
+    strictSeparator: true,
+  })
   publicationDate: string;
 
-  @IsNumber()
+  @IsNumber({
+    allowNaN: false,
+    allowInfinity: false,
+    maxDecimalPlaces: 2,
+  })
+  @Min(0)
   @IsNotEmpty()
   price: number;
 }

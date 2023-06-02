@@ -8,6 +8,7 @@ import {
 
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import { Book } from '../domain/book';
 
 const execAsync = promisify(exec);
 
@@ -60,7 +61,7 @@ describe('PrismaBookRepository', () => {
 
     expect(books).toHaveLength(1);
     expect(books).toEqual(
-      expect.arrayContaining([bookBuilder().withId('prisma-id').build()]),
+      expect.arrayContaining([bookBuilder().withId('prisma-id').build().data]),
     );
   });
 
@@ -68,7 +69,7 @@ describe('PrismaBookRepository', () => {
     const bookRepository = new PrismaBookRepository(prismaClient);
 
     await prismaClient.book.create({
-      data: bookBuilder().withId('prisma-id').build(),
+      data: bookBuilder().withId('prisma-id').build().data,
     });
 
     await bookRepository.deleteBookById('prisma-id');
@@ -80,5 +81,29 @@ describe('PrismaBookRepository', () => {
     });
 
     expect(searchBook).toBeNull();
+  });
+
+  describe('getBookById()', () => {
+    it('getBookById() should get a book in db', async () => {
+      const bookRepository = new PrismaBookRepository(prismaClient);
+
+      const book = bookBuilder().withId('prisma-id').build();
+
+      await prismaClient.book.create({
+        data: book.data,
+      });
+
+      const fundBook = await bookRepository.getBookById('prisma-id');
+
+      expect(fundBook).toEqual(book);
+    });
+
+    it('getBookById() should return undefined if book not found', async () => {
+      const bookRepository = new PrismaBookRepository(prismaClient);
+
+      const fundBook = await bookRepository.getBookById('prisma-id');
+
+      expect(fundBook).toBeUndefined();
+    });
   });
 });

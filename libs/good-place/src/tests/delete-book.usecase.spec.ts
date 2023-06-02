@@ -15,6 +15,12 @@ describe('DeleteBookUseCase', () => {
     await fixture.whenUserDeleteBook('1');
     await fixture.thenBookShouldNotExist('1');
   });
+
+  it('should not throw if book not exist', async () => {
+    fixture.givenBookExists([]);
+    await fixture.whenUserDeleteBook('1');
+    await fixture.thenBookShouldNotExist('1');
+  });
 });
 
 const createFixture = () => {

@@ -59,7 +59,7 @@ const createFixture = () => {
       const inDbBook = bookRepository.book.find(
         (b) => b.id === expectedBook.id,
       );
-      expect(expectedBook).toEqual(inDbBook);
+      expect(expectedBook.data).toEqual(inDbBook);
     },
   };
 };

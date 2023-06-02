@@ -61,6 +61,6 @@ describe('PrismaUserRepository', () => {
     const users = await prismaClient.user.findMany();
 
     expect(users).toHaveLength(1);
-    expect(users).toEqual(expect.arrayContaining([newUser]));
+    expect(users).toEqual(expect.arrayContaining([newUser.data]));
   });
 });

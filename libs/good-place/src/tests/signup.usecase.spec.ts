@@ -128,7 +128,7 @@ const createFixture = () => {
       const fundUser = userRepository.users.find(
         (u) => u.id === expectedUser.id,
       );
-      expect(expectedUser).toEqual(fundUser);
+      expect(expectedUser.data).toEqual(fundUser);
     },
     thenErrorShouldBe: (expectedError: new () => Error) => {
       expect(thrownError).toBeInstanceOf(expectedError);

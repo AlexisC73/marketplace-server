@@ -16,14 +16,14 @@ export class SignupUseCase {
     if (!authorizedRoles.includes(signupRole)) {
       throw new UnauthorizedError(`Role ${signupRole} is not authorized`);
     }
-    const user: User = {
+    const user: User = User.fromData({
       id: signupUserCommand.id,
       name: signupUserCommand.name,
       email: signupUserCommand.email,
       password: signupUserCommand.password,
       role: signupRole,
       createdAt: this.dateProdiver.getNow(),
-    };
+    });
     await this.userRepository.save(user);
   }
 }
