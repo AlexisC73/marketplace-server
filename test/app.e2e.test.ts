@@ -12,6 +12,7 @@ import {
 import { promisify } from 'util';
 import { AppModule } from '../src/app.module';
 import { PrismaBookRepository } from '@app/good-place/infrastructure/prisma-book.repository';
+import { Book } from '@app/good-place/domain/book';
 
 const asyncExec = promisify(exec);
 
@@ -103,5 +104,41 @@ describe('test e2e', () => {
       published: false,
       seller: expect.any(String),
     });
+  });
+
+  it('/book (DELETE)', async () => {
+    const bookRepository = new PrismaBookRepository(prismaClient);
+
+    const bookToDelete = Book.fromData({
+      createdAt: now,
+      id: 'test-id',
+      author: 'test-author',
+      description: 'test-description',
+      imageUrl: 'test-image-url',
+      price: 1000,
+      publicationDate: new Date('2023-06-01T13:00:00Z'),
+      published: false,
+      seller: 'test-seller',
+      title: 'test-title',
+    });
+
+    await prismaClient.book.create({
+      data: bookToDelete.data,
+    });
+
+    console.log(`/book/${bookToDelete.id}`);
+
+    await request(app.getHttpServer())
+      .delete(`/book/${bookToDelete.id}`)
+      .send()
+      .expect(200);
+
+    const deletedBook = await prismaClient.book.findUnique({
+      where: {
+        id: bookToDelete.id,
+      },
+    });
+
+    expect(deletedBook).toBeNull();
   });
 });

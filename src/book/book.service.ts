@@ -33,7 +33,6 @@ export class BookService {
   }
 
   async delete(id: string) {
-    if (!isCuid(id)) throw new BadRequestException('Invalid id');
     try {
       await this.deleteBookUseCase.handle(id);
     } catch (err) {
