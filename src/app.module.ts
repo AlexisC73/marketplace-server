@@ -6,6 +6,7 @@ import { Module } from '@nestjs/common';
 import { BookModule } from './book/book.module';
 import { PrismaUserRepository } from '@app/good-place/infrastructure/prisma-user.repository';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UserModule } from './user/user.module';
     }),
     BookModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
