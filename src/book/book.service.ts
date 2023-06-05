@@ -6,6 +6,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { AddBookDTO } from './dto/add-book-dto';
 import { createId, isCuid } from '@paralleldrive/cuid2';
 import { DeleteBookUseCase } from '@app/good-place/application/usecases/delete-book.usecase';
+import { FastifyRequest } from 'fastify';
 
 @Injectable()
 export class BookService {
@@ -14,7 +15,7 @@ export class BookService {
     private readonly deleteBookUseCase: DeleteBookUseCase,
   ) {}
 
-  async add(addBookDto: AddBookDTO) {
+  async add(addBookDto: AddBookDTO, req: any) {
     const addBookCommand: AddBookCommand = {
       id: createId(),
       title: addBookDto.title,
@@ -23,7 +24,7 @@ export class BookService {
       publicationDate: new Date(addBookDto.publicationDate),
       imageUrl: "obtenu après l'upload",
       price: addBookDto.price,
-      seller: 'Recuperer depuis le guard plus tard',
+      seller: req?.user?.id,
     };
     try {
       await this.addBookUseCase.handle(addBookCommand);

@@ -16,6 +16,8 @@ describe('PrismaBookRepository', () => {
   let prismaClient: PrismaClient;
   let postgresContainer: StartedPostgreSqlContainer;
 
+  let userId: string;
+
   beforeAll(async () => {
     postgresContainer = await new PostgreSqlContainer()
       .withUsername('test-postgres')
@@ -45,6 +47,17 @@ describe('PrismaBookRepository', () => {
 
   beforeEach(async () => {
     await prismaClient.book.deleteMany();
+    await prismaClient.user.deleteMany();
+    await prismaClient.user.create({
+      data: {
+        id: 'user-id',
+        email: 'test@email.fr',
+        password: 'password',
+        createdAt: new Date(),
+        name: 'test',
+      },
+    });
+    userId = 'user-id';
   }, 10000);
 
   afterAll(async () => {
@@ -55,21 +68,56 @@ describe('PrismaBookRepository', () => {
   it('addBook() should add a book to the database', async () => {
     const bookRepository = new PrismaBookRepository(prismaClient);
 
-    await bookRepository.addBook(bookBuilder().withId('prisma-id').build());
+    const bookToSave = bookBuilder()
+      .withId('prisma-id')
+      .withSeller(userId)
+      .build();
 
-    const books = await prismaClient.book.findMany();
+    await bookRepository.addBook(bookToSave);
+
+    const books = (await prismaClient.book.findMany()).map((book) =>
+      Book.fromData({
+        id: book.id,
+        title: book.title,
+        author: book.author,
+        price: book.price,
+        imageUrl: book.imageUrl,
+        publicationDate: book.publicationDate,
+        description: book.description,
+        published: book.published,
+        seller: book.sellerId,
+        createdAt: book.createdAt,
+      }),
+    );
 
     expect(books).toHaveLength(1);
-    expect(books).toEqual(
-      expect.arrayContaining([bookBuilder().withId('prisma-id').build().data]),
-    );
+    expect(books).toEqual(expect.arrayContaining([bookToSave]));
   });
 
   it('deleteBook() should delete book in the database', async () => {
     const bookRepository = new PrismaBookRepository(prismaClient);
+    const book = bookBuilder()
+      .withId('prisma-id')
+      .withSeller(userId)
+      .build().data;
 
     await prismaClient.book.create({
-      data: bookBuilder().withId('prisma-id').build().data,
+      data: {
+        id: book.id,
+        title: book.title,
+        author: book.author,
+        price: book.price,
+        imageUrl: book.imageUrl,
+        publicationDate: book.publicationDate,
+        description: book.description,
+        published: book.published,
+        seller: {
+          connect: {
+            id: book.seller,
+          },
+        },
+        createdAt: book.createdAt,
+      },
     });
 
     await bookRepository.deleteBookById('prisma-id');
@@ -87,10 +135,25 @@ describe('PrismaBookRepository', () => {
     it('getBookById() should get a book in db', async () => {
       const bookRepository = new PrismaBookRepository(prismaClient);
 
-      const book = bookBuilder().withId('prisma-id').build();
+      const book = bookBuilder().withId('prisma-id').withSeller(userId).build();
 
       await prismaClient.book.create({
-        data: book.data,
+        data: {
+          id: book.id,
+          title: book.title,
+          author: book.author,
+          price: book.price,
+          imageUrl: book.imageUrl,
+          publicationDate: book.publicationDate,
+          description: book.description,
+          published: book.published,
+          seller: {
+            connect: {
+              id: book.seller,
+            },
+          },
+          createdAt: book.createdAt,
+        },
       });
 
       const fundBook = await bookRepository.getBookById('prisma-id');

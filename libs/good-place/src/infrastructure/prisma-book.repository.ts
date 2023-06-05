@@ -18,7 +18,11 @@ export class PrismaBookRepository implements BookRepository {
         publicationDate: book.publicationDate,
         description: book.description,
         published: book.published,
-        seller: book.seller,
+        seller: {
+          connect: {
+            id: book.seller,
+          },
+        },
         createdAt: book.createdAt,
       },
     });
@@ -43,6 +47,17 @@ export class PrismaBookRepository implements BookRepository {
 
     if (!fundBook) return Promise.resolve(undefined);
 
-    return Book.fromData(fundBook);
+    return Book.fromData({
+      id: fundBook.id,
+      title: fundBook.title,
+      author: fundBook.author,
+      price: fundBook.price,
+      imageUrl: fundBook.imageUrl,
+      publicationDate: fundBook.publicationDate,
+      description: fundBook.description,
+      published: fundBook.published,
+      seller: fundBook.sellerId,
+      createdAt: fundBook.createdAt,
+    });
   }
 }

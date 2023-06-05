@@ -19,8 +19,9 @@ model Book {
   publicationDate DateTime
   description     String
   published       Boolean
-  seller          String
   createdAt       DateTime
+  seller          User     @relation(fields: [sellerId], references: [id])
+  sellerId        String
 }
 
 model User {
@@ -30,6 +31,7 @@ model User {
   password  String
   role      UserRole @default(CLIENT)
   createdAt DateTime
+  Book      Book[]
 }
 
 enum UserRole {
