@@ -18,7 +18,7 @@ export class UserService {
       name,
       email,
       password: await bcrypt.hash(password, 10),
-      role: Role[role],
+      role,
     };
     try {
       await this.signupUseCase.handle(signupUserCommand);

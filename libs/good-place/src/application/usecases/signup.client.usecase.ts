@@ -16,7 +16,9 @@ export class SignupUseCase {
     const signupRole = Role[signupUserCommand.role];
 
     if (!authorizedRoles.includes(signupRole)) {
-      throw new UnauthorizedError(`Role ${signupRole} is not authorized`);
+      throw new UnauthorizedError(
+        `Role ${signupUserCommand.role} is not authorized`,
+      );
     }
 
     const existUser = await this.userRepository.findOneByEmail(
@@ -44,7 +46,7 @@ export type SignupUserCommand = {
   name: string;
   email: string;
   password: string;
-  role: keyof typeof Role;
+  role: string;
 };
 
 export class UnauthorizedError extends Error {
