@@ -5,6 +5,7 @@ import { RealDateProvider } from '@app/good-place/infrastructure/real-date.provi
 import { Module } from '@nestjs/common';
 import { BookModule } from './book/book.module';
 import { PrismaUserRepository } from '@app/good-place/infrastructure/prisma-user.repository';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { PrismaUserRepository } from '@app/good-place/infrastructure/prisma-user
       UserRepository: PrismaUserRepository,
     }),
     BookModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],

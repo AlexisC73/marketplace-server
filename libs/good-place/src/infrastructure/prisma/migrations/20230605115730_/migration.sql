@@ -2,6 +2,22 @@
 CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'MODERATOR', 'CLIENT', 'SELLER');
 
 -- CreateTable
+CREATE TABLE "Book" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "author" TEXT NOT NULL,
+    "price" DOUBLE PRECISION NOT NULL,
+    "imageUrl" TEXT NOT NULL,
+    "publicationDate" TIMESTAMP(3) NOT NULL,
+    "description" TEXT NOT NULL,
+    "published" BOOLEAN NOT NULL,
+    "seller" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Book_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
