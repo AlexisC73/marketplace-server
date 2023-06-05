@@ -7,6 +7,8 @@ import { BookModule } from './book/book.module';
 import { PrismaUserRepository } from '@app/good-place/infrastructure/prisma-user.repository';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { AuthGuard } from './auth.guard';
+import { RoleGuard } from './role.guard';
 
 @Module({
   imports: [
@@ -21,6 +23,15 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: 'APP_GUARD',
+      useClass: AuthGuard,
+    },
+    {
+      provide: 'APP_GUARD',
+      useClass: RoleGuard,
+    },
+  ],
 })
 export class AppModule {}
