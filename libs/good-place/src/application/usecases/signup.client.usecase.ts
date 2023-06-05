@@ -12,10 +12,21 @@ export class SignupUseCase {
 
   async handle(signupUserCommand: SignupUserCommand) {
     const authorizedRoles = [Role.CLIENT, Role.SELLER];
+
     const signupRole = Role[signupUserCommand.role];
+
     if (!authorizedRoles.includes(signupRole)) {
       throw new UnauthorizedError(`Role ${signupRole} is not authorized`);
     }
+
+    const existUser = await this.userRepository.findOneByEmail(
+      signupUserCommand.email,
+    );
+
+    if (existUser) {
+      throw new BadRequestError('User already exists');
+    }
+
     const user: User = User.fromData({
       id: signupUserCommand.id,
       name: signupUserCommand.name,
@@ -40,5 +51,12 @@ export class UnauthorizedError extends Error {
   constructor(message?: string) {
     super(message);
     this.name = 'UnauthorizedError';
+  }
+}
+
+export class BadRequestError extends Error {
+  constructor(message?: string) {
+    super(message);
+    this.name = 'BadRequestError';
   }
 }

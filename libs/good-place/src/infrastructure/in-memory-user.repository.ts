@@ -4,10 +4,15 @@ import { User } from '../domain/user';
 export class InMemoryUserRepository implements UserRepository {
   users: User['data'][] = [];
   async save(user: User) {
-    if (this.users.find((u) => u.email === user.email)) {
-      throw new Error('User already exists');
-    }
     this._save(user);
+  }
+
+  async findOneByEmail(email: string): Promise<User | undefined> {
+    const fundIndex = this.users.findIndex((u) => u.email === email);
+    if (fundIndex === -1) {
+      return undefined;
+    }
+    return User.fromData(this.users[fundIndex]);
   }
 
   private _save(user: User) {

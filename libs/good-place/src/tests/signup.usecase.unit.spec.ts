@@ -1,4 +1,5 @@
 import {
+  BadRequestError,
   SignupUseCase,
   SignupUserCommand,
   UnauthorizedError,
@@ -18,6 +19,7 @@ describe('SignupUseCase', () => {
   describe('Rule: A new user can only signup as client or seller', () => {
     test('when alice signup as client, her account should be created with client role', async () => {
       fixture.givenNowIs(new Date('2023-06-02T12:00:00Z'));
+
       await fixture.whenNewUserSignup({
         id: 'test-id',
         name: 'Alice',
@@ -105,6 +107,24 @@ describe('SignupUseCase', () => {
       fixture.thenUserShouldNotExist('test-id');
     });
   });
+  describe('Rule: Email must be unique', () => {
+    test('Alice can not signup with same email multiple times', async () => {
+      fixture.givenNowIs(new Date('2023-06-02T12:00:00Z'));
+      fixture.givenUserExist([
+        userBuilder().withEmail('alice@email.fr').build(),
+      ]);
+
+      await fixture.whenNewUserSignup({
+        id: 'test-id',
+        name: 'Alice',
+        email: 'alice@email.fr',
+        password: 'test-pass',
+        role: 'CLIENT',
+      });
+
+      fixture.thenErrorShouldBe(BadRequestError);
+    });
+  });
 });
 
 const createFixture = () => {
@@ -117,6 +137,9 @@ const createFixture = () => {
     givenNowIs: (_now: Date) => {
       dateProvider.now = _now;
     },
+    givenUserExist: (users: User[]) => {
+      users.map((u) => userRepository.save(u));
+    },
     whenNewUserSignup: async (signupUserCommand: SignupUserCommand) => {
       try {
         await signupUseCase.handle(signupUserCommand);
@@ -128,7 +151,8 @@ const createFixture = () => {
       const fundUser = userRepository.users.find(
         (u) => u.id === expectedUser.id,
       );
-      expect(expectedUser.data).toEqual(fundUser);
+
+      expect(fundUser).toEqual(expectedUser.data);
     },
     thenErrorShouldBe: (expectedError: new () => Error) => {
       expect(thrownError).toBeInstanceOf(expectedError);

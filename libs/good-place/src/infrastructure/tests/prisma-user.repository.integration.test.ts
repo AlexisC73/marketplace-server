@@ -63,4 +63,25 @@ describe('PrismaUserRepository', () => {
     expect(users).toHaveLength(1);
     expect(users).toEqual(expect.arrayContaining([newUser.data]));
   });
+
+  test('getOneByEmail() should get user with his email', async () => {
+    const userRepository = new PrismaUserRepository(prismaClient);
+
+    const newUser = userBuilder().withEmail('alice@est.fr').build();
+
+    await prismaClient.user.create({
+      data: {
+        createdAt: newUser.createdAt,
+        email: newUser.email,
+        id: newUser.id,
+        name: newUser.name,
+        password: newUser.password,
+        role: newUser.role,
+      },
+    });
+
+    const fundUser = await userRepository.findOneByEmail(newUser.email);
+
+    expect(fundUser).toEqual(newUser);
+  });
 });
