@@ -62,7 +62,7 @@ describe('PrismaUserRepository', () => {
     expect(users).toEqual(expect.arrayContaining([newUser.data]));
   });
 
-  test('getOneByEmail() should get user with his email', async () => {
+  test('findOneByEmail() should get user with his email', async () => {
     const userRepository = new PrismaUserRepository(prismaClient);
 
     const newUser = userBuilder().withEmail('alice@est.fr').build();
@@ -82,5 +82,51 @@ describe('PrismaUserRepository', () => {
     const fundUser = await userRepository.findOneByEmail(newUser.email);
 
     expect(fundUser).toEqual(newUser);
+  });
+
+  test('findOneById() should get user with his id', async () => {
+    const userRepository = new PrismaUserRepository(prismaClient);
+
+    const newUser = userBuilder().withId('test-id').build();
+
+    await prismaClient.user.create({
+      data: {
+        createdAt: newUser.createdAt,
+        email: newUser.email,
+        id: newUser.id,
+        name: newUser.name,
+        password: newUser.password,
+        role: newUser.role,
+        avatarUrl: newUser.avatarUrl,
+      },
+    });
+
+    const fundUser = await userRepository.findOneById(newUser.id);
+
+    expect(fundUser).toEqual(newUser);
+  });
+
+  test('updateAvatar() should update user avatar', async () => {
+    const userRepository = new PrismaUserRepository(prismaClient);
+
+    const newUser = userBuilder().withId('test-id').build();
+
+    await prismaClient.user.create({
+      data: {
+        createdAt: newUser.createdAt,
+        email: newUser.email,
+        id: newUser.id,
+        name: newUser.name,
+        password: newUser.password,
+        role: newUser.role,
+        avatarUrl: newUser.avatarUrl,
+      },
+    });
+
+    await userRepository.updateAvatar(newUser, 'new-avatar-url');
+
+    const updateUser = await userRepository.findOneById(newUser.id);
+
+    expect(updateUser.avatarUrl).toEqual('new-avatar-url');
   });
 });

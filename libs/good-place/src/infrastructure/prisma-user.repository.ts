@@ -7,8 +7,6 @@ import { Injectable } from '@nestjs/common';
 export class PrismaUserRepository implements UserRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
-  findOneById: (id: string) => Promise<User>;
-
   async save(user: User) {
     await this.prisma.user.create({
       data: {
@@ -30,12 +28,32 @@ export class PrismaUserRepository implements UserRepository {
     });
   }
 
+  async findOneById(id: string): Promise<User | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return User.fromData({
+      id: user.id,
+      email: user.email,
+      password: user.password,
+      createdAt: user.createdAt,
+      name: user.name,
+      role: Role[user.role],
+      avatarUrl: user.avatarUrl,
+    });
+  }
+
   async findOneByEmail(email: string) {
     const fundUser = await this.prisma.user.findUnique({
       where: { email },
     });
     if (!fundUser) {
-      return undefined;
+      return null;
     }
     return User.fromData({
       id: fundUser.id,
