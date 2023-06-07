@@ -48,6 +48,7 @@
     }
   },
   "dependencies": {
+    "@fastify/multipart": "^7.6.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/jwt": "^10.0.3",

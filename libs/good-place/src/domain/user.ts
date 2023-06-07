@@ -13,6 +13,7 @@ export class User {
     private readonly _password: string,
     private readonly _role: Role,
     private readonly _createdAt: Date,
+    private readonly _avatarUrl: string,
   ) {}
 
   get id(): string {
@@ -39,6 +40,10 @@ export class User {
     return this._createdAt;
   }
 
+  get avatarUrl(): string {
+    return this._avatarUrl;
+  }
+
   get data() {
     return {
       id: this.id,
@@ -47,6 +52,7 @@ export class User {
       password: this.password,
       role: this.role,
       createdAt: this.createdAt,
+      avatarUrl: this.avatarUrl,
     };
   }
 
@@ -58,6 +64,7 @@ export class User {
       data.password,
       data.role,
       data.createdAt,
+      data.avatarUrl,
     );
   }
 }

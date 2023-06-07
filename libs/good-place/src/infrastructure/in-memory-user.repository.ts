@@ -15,7 +15,28 @@ export class InMemoryUserRepository implements UserRepository {
     return User.fromData(this.users[fundIndex]);
   }
 
+  async updateAvatar(user: User, savedUrl: string): Promise<void> {
+    const newUser = User.fromData({
+      ...user.data,
+      avatarUrl: savedUrl,
+    });
+    this._save(newUser);
+  }
+
+  async findOneById(id: string): Promise<User | null> {
+    const foundIndex = this.users.findIndex((u) => u.id === id);
+    if (foundIndex === -1) {
+      return null;
+    }
+    return User.fromData(this.users[foundIndex]);
+  }
+
   private _save(user: User) {
+    const foundIndex = this.users.findIndex((u) => u.id === user.data.id);
+    if (foundIndex !== -1) {
+      this.users[foundIndex] = user.data;
+      return;
+    }
     this.users = [...this.users, user.data];
   }
 }

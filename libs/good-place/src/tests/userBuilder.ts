@@ -7,6 +7,7 @@ export const userBuilder = ({
   password = 'password',
   role = Role.CLIENT,
   createdAt = new Date('2023-06-02T12:00:00Z'),
+  avatarUrl = 'default-avatar.png',
 }: {
   id?: string;
   name?: string;
@@ -14,8 +15,9 @@ export const userBuilder = ({
   password?: string;
   role?: Role;
   createdAt?: Date;
+  avatarUrl?: string;
 } = {}) => {
-  const props = { id, name, email, password, role, createdAt };
+  const props = { id, name, email, password, role, createdAt, avatarUrl };
   return {
     withId: (_id: string) => userBuilder({ ...props, id: _id }),
     withName: (_name: string) => userBuilder({ ...props, name: _name }),
@@ -25,6 +27,8 @@ export const userBuilder = ({
     withRole: (_role: Role) => userBuilder({ ...props, role: _role }),
     withCreatedAt: (_createdAt: Date) =>
       userBuilder({ ...props, createdAt: _createdAt }),
+    withAvatarUrl: (_avatarUrl: string) =>
+      userBuilder({ ...props, avatarUrl: _avatarUrl }),
     build: (): User => User.fromData(props),
   };
 };

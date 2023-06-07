@@ -5,6 +5,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { ValidationPipe } from '@nestjs/common';
+import FastifyMultipart from '@fastify/multipart';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -16,6 +17,7 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  await app.listen(3000);
+  app.register(FastifyMultipart);
+  await app.listen(5500);
 }
 bootstrap();

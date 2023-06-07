@@ -36,6 +36,7 @@ export class SignupUseCase {
       password: signupUserCommand.password,
       role: signupRole,
       createdAt: this.dateProdiver.getNow(),
+      avatarUrl: 'default-avatar.png',
     });
     await this.userRepository.save(user);
   }
