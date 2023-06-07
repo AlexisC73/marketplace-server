@@ -5,9 +5,11 @@ export class InMemoryFileRepository implements FileRepository {
   async save({
     file,
     fileName,
+    mimetype,
   }: {
     file: Buffer;
     fileName: string;
+    mimetype: string;
   }): Promise<string> {
     this.files[fileName] = file;
     return Promise.resolve(fileName);

@@ -9,9 +9,13 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthGuard } from './auth.guard';
 import { RoleGuard } from './role.guard';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     GoodPlaceModule.register({
       BookRepository: PrismaBookRepository,
       PrismaClient: PrismaService,

@@ -1,6 +1,8 @@
+import { Injectable } from '@nestjs/common';
 import { FileRepository } from '../file.repository';
 import { UserRepository } from '../user.repository';
 
+@Injectable()
 export class UploadAvatarUseCase {
   constructor(
     private readonly fileRepository: FileRepository,
@@ -15,6 +17,7 @@ export class UploadAvatarUseCase {
     const savedUrl = await this.fileRepository.save({
       file: uploadAvatarCommand.image,
       fileName: uploadAvatarCommand.fileName,
+      mimetype: uploadAvatarCommand.mimetype,
     });
 
     const userToUpdate = await this.userRepository.findOneById(
