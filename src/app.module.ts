@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { AuthGuard } from './auth.guard';
 import { RoleGuard } from './role.guard';
 import { ConfigModule } from '@nestjs/config';
+import { S3FileRepository } from '@app/good-place/infrastructure/S3FileRepository';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ConfigModule } from '@nestjs/config';
       PrismaClient: PrismaService,
       DateProvider: RealDateProvider,
       UserRepository: PrismaUserRepository,
+      FileRepository: S3FileRepository,
     }),
     BookModule,
     UserModule,

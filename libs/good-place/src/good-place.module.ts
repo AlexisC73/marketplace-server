@@ -6,6 +6,8 @@ import { DateProvider } from './application/date.provider';
 import { DeleteBookUseCase } from './application/usecases/delete-book.usecase';
 import { SignupUseCase } from './application/usecases/signup.client.usecase';
 import { UserRepository } from './application/user.repository';
+import { UploadAvatarUseCase } from './application/usecases/upload-avatar.usecase';
+import { FileRepository } from './application/file.repository';
 
 @Global()
 @Module({
@@ -18,6 +20,7 @@ export class GoodPlaceModule {
     PrismaClient: ClassProvider<PrismaClient>['useClass'];
     DateProvider: ClassProvider<DateProvider>['useClass'];
     UserRepository: ClassProvider<UserRepository>['useClass'];
+    FileRepository: ClassProvider<FileRepository>['useClass'];
   }): DynamicModule {
     return {
       module: GoodPlaceModule,
@@ -25,10 +28,12 @@ export class GoodPlaceModule {
         AddBookUseCase,
         DeleteBookUseCase,
         SignupUseCase,
+        UploadAvatarUseCase,
         { provide: BookRepository, useClass: providers.BookRepository },
         { provide: PrismaClient, useClass: providers.PrismaClient },
         { provide: DateProvider, useClass: providers.DateProvider },
         { provide: UserRepository, useClass: providers.UserRepository },
+        { provide: FileRepository, useClass: providers.FileRepository },
       ],
       exports: [AddBookUseCase, DeleteBookUseCase, SignupUseCase],
     };
