@@ -35,7 +35,12 @@ export class GoodPlaceModule {
         { provide: UserRepository, useClass: providers.UserRepository },
         { provide: FileRepository, useClass: providers.FileRepository },
       ],
-      exports: [AddBookUseCase, DeleteBookUseCase, SignupUseCase],
+      exports: [
+        AddBookUseCase,
+        DeleteBookUseCase,
+        SignupUseCase,
+        UploadAvatarUseCase,
+      ],
     };
   }
 }
