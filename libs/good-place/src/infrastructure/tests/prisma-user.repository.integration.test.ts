@@ -35,9 +35,7 @@ describe('PrismaUserRepository', () => {
       },
     });
 
-    await execAsync(
-      `set DATABASE_URL=${databaseUrl} && npx prisma migrate dev`,
-    );
+    await execAsync(`set DATABASE_URL=${databaseUrl} && npx prisma db push`);
 
     return prismaClient.$connect();
   }, 30000);
@@ -77,6 +75,7 @@ describe('PrismaUserRepository', () => {
         name: newUser.name,
         password: newUser.password,
         role: newUser.role,
+        avatarUrl: newUser.avatarUrl,
       },
     });
 

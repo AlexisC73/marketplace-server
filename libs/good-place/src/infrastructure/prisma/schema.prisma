@@ -30,6 +30,7 @@ model User {
   email     String   @unique
   password  String
   role      UserRole @default(CLIENT)
+  avatarUrl String
   createdAt DateTime
   Book      Book[]
 }

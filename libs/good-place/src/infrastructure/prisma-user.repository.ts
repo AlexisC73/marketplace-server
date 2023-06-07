@@ -7,6 +7,8 @@ import { Injectable } from '@nestjs/common';
 export class PrismaUserRepository implements UserRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
+  findOneById: (id: string) => Promise<User>;
+
   async save(user: User) {
     await this.prisma.user.create({
       data: {
@@ -16,7 +18,15 @@ export class PrismaUserRepository implements UserRepository {
         createdAt: user.createdAt,
         name: user.name,
         role: Role[user.role],
+        avatarUrl: user.avatarUrl,
       },
+    });
+  }
+
+  async updateAvatar(user: User, savedUrl: string): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { avatarUrl: savedUrl },
     });
   }
 
@@ -34,6 +44,7 @@ export class PrismaUserRepository implements UserRepository {
       createdAt: fundUser.createdAt,
       name: fundUser.name,
       role: Role[fundUser.role],
+      avatarUrl: fundUser.avatarUrl,
     });
   }
 }

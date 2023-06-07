@@ -38,9 +38,7 @@ describe('PrismaBookRepository', () => {
       },
     });
 
-    await execAsync(
-      `set DATABASE_URL=${databaseUrl} && npx prisma migrate dev`,
-    );
+    await execAsync(`set DATABASE_URL=${databaseUrl} && npx prisma db push`);
 
     return prismaClient.$connect();
   }, 30000);
@@ -55,6 +53,7 @@ describe('PrismaBookRepository', () => {
         password: 'password',
         createdAt: new Date(),
         name: 'test',
+        avatarUrl: 'test',
       },
     });
     userId = 'user-id';
