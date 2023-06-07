@@ -34,6 +34,7 @@ export class AuthService {
         email: fundUser.email,
         name: fundUser.name,
         role: fundUser.role,
+        avatarUrl: fundUser.avatarUrl,
       },
       {
         expiresIn: '1d',
@@ -45,6 +46,7 @@ export class AuthService {
       email: fundUser.email,
       name: fundUser.name,
       role: fundUser.role,
+      avatarUrl: fundUser.avatarUrl,
       access_token: token,
     };
   }
