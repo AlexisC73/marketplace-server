@@ -1,8 +1,7 @@
-import { Body, Controller, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { Public } from 'src/public.decorator';
-import { SavedMultipartFile } from '@fastify/multipart';
 
 @Controller('user')
 export class UserController {
@@ -14,8 +13,13 @@ export class UserController {
     await this.userService.signup(createUserDTO);
   }
 
-  @Post('/upload')
-  async upload(@Req() req: any) {
+  @Patch('/avatar')
+  async updateAvatar(@Req() req: any) {
     this.userService.uploadAvatar(req);
+  }
+
+  @Get('/avatar')
+  async getAvatar(@Req() req: any) {
+    return this.userService.getAvatar(req);
   }
 }

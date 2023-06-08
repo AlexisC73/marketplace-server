@@ -11,12 +11,14 @@ import {
   UploadAvatarUseCase,
 } from '@app/good-place/application/usecases/upload-avatar.usecase';
 import { SavedMultipartFile } from '@fastify/multipart';
+import { PrismaService } from '@app/good-place/infrastructure/prisma/prisma.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly signupUseCase: SignupUseCase,
     private readonly uploadAvatarUseCase: UploadAvatarUseCase,
+    private readonly prismaService: PrismaService,
   ) {}
 
   async signup({ name, email, role, password }: CreateUserDTO) {
@@ -46,5 +48,17 @@ export class UserService {
     };
 
     await this.uploadAvatarUseCase.handle(uploadAvatarCommand);
+  }
+
+  async getAvatar(req: any) {
+    const user = req.user;
+
+    const fundUser = await this.prismaService.user.findUnique({
+      where: { id: user.id },
+    });
+    if (!fundUser) {
+      throw new BadRequestException('User not found, try to log again.');
+    }
+    return { data: { avatarUrl: fundUser.avatarUrl } };
   }
 }
