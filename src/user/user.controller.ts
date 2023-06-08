@@ -10,12 +10,12 @@ export class UserController {
   @Public()
   @Post('/signup')
   async signup(@Body() createUserDTO: CreateUserDTO) {
-    await this.userService.signup(createUserDTO);
+    return this.userService.signup(createUserDTO);
   }
 
   @Patch('/avatar')
   async updateAvatar(@Req() req: any) {
-    this.userService.uploadAvatar(req);
+    return this.userService.uploadAvatar(req);
   }
 
   @Get('/avatar')

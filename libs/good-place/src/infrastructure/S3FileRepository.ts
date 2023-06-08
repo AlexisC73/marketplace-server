@@ -24,13 +24,13 @@ export class S3FileRepository implements FileRepository {
     await this.s3Client.send(
       new PutObjectCommand({
         Bucket: this.bucketName,
-        Key: fileName,
+        Key: 'avatar/' + fileName,
         Body: file,
         ContentType: mimetype,
         ACL: 'public-read',
       }),
     );
 
-    return `${this.defaultImageUrl}${fileName}`;
+    return `${this.defaultImageUrl}/avatar/${fileName}`;
   }
 }

@@ -38,16 +38,30 @@ export class UserService {
   }
 
   async uploadAvatar(req: any) {
-    const file: SavedMultipartFile = await req.file();
+    try {
+      const file: SavedMultipartFile = await req.file();
+      const user = req.user;
 
-    const uploadAvatarCommand: UploadAvatarCommand = {
-      fileName: file.filename,
-      image: await file.toBuffer(),
-      mimetype: file.mimetype,
-      userId: req.user.id,
-    };
+      if (!user) {
+        throw new BadRequestException('User not found, try to log again.');
+      }
+      if (!user.id) {
+        throw new BadRequestException('User id not found, try to log again.');
+      }
 
-    await this.uploadAvatarUseCase.handle(uploadAvatarCommand);
+      const extension = file.filename.split('.').pop();
+
+      const uploadAvatarCommand: UploadAvatarCommand = {
+        fileName: `avatar-${user.id}.${extension}`,
+        image: await file.toBuffer(),
+        mimetype: file.mimetype,
+        userId: req.user.id,
+      };
+
+      await this.uploadAvatarUseCase.handle(uploadAvatarCommand);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 
   async getAvatar(req: any) {
