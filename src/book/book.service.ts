@@ -4,9 +4,8 @@ import {
 } from '@app/good-place/application/usecases/add-book.usecase';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { AddBookDTO } from './dto/add-book-dto';
-import { createId, isCuid } from '@paralleldrive/cuid2';
+import { createId } from '@paralleldrive/cuid2';
 import { DeleteBookUseCase } from '@app/good-place/application/usecases/delete-book.usecase';
-import { FastifyRequest } from 'fastify';
 
 @Injectable()
 export class BookService {

@@ -13,6 +13,8 @@ import { promisify } from 'util';
 import { AppModule } from '../src/app.module';
 import { PrismaBookRepository } from '@app/good-place/infrastructure/prisma-book.repository';
 import { Book } from '@app/good-place/domain/book';
+import { PrismaUserRepository } from '@app/good-place/infrastructure/prisma-user.repository';
+import { Role, User } from '@app/good-place/domain/user';
 
 const asyncExec = promisify(exec);
 
@@ -45,9 +47,7 @@ describe('test e2e', () => {
       },
     });
 
-    await asyncExec(
-      `set DATABASE_URL=${databaseUrl} && npx prisma migrate deploy`,
-    );
+    await asyncExec(`set DATABASE_URL=${databaseUrl} && npx prisma db push`);
 
     return prismaClient.$connect();
   }, 20000);
@@ -74,10 +74,26 @@ describe('test e2e', () => {
   });
 
   it('/book (POST)', async () => {
-    const bookRepository = new PrismaBookRepository(prismaClient);
+    const userRepository = new PrismaUserRepository(prismaClient);
+
+    await userRepository.save(
+      User.fromData({
+        avatarUrl: 'dasds',
+        createdAt: new Date(),
+        email: 'test@test.fr',
+        id: 'test-seller',
+        name: 'jean',
+        password: 'test-pass',
+        role: Role.CLIENT,
+      }),
+    );
 
     await request(app.getHttpServer())
       .post('/book')
+      .set(
+        'Authorization',
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRlc3Qtc2VsbGVyIiwiZW1haWwiOiJ0ZXN0QHRlc3QuZnIiLCJuYW1lIjoiamVhbiIsInJvbGUiOiJDTElFTlQiLCJhdmF0YXJVcmwiOiJkZWZhdWx0LWF2YXRhci5wbmciLCJpYXQiOjE2ODYzMTc0NzYsImV4cCI6MTY4NjQwMzg3Nn0.N8hD-ObLFwYc5PC5-w_qUhcFHD6KDvvIGC8Bk32osTI',
+      )
       .send({
         title: 'test-title',
         author: 'test-author',
@@ -102,12 +118,24 @@ describe('test e2e', () => {
       price: 1000,
       imageUrl: expect.any(String),
       published: false,
-      seller: expect.any(String),
+      sellerId: 'test-seller',
     });
   });
 
   it('/book (DELETE)', async () => {
-    const bookRepository = new PrismaBookRepository(prismaClient);
+    const userRepository = new PrismaUserRepository(prismaClient);
+
+    await userRepository.save(
+      User.fromData({
+        avatarUrl: 'dasds',
+        createdAt: new Date(),
+        email: 'test@test.fr',
+        id: 'test-seller',
+        name: 'jean',
+        password: 'test-pass',
+        role: Role.CLIENT,
+      }),
+    );
 
     const bookToDelete = Book.fromData({
       createdAt: now,
@@ -123,13 +151,30 @@ describe('test e2e', () => {
     });
 
     await prismaClient.book.create({
-      data: bookToDelete.data,
+      data: {
+        author: bookToDelete.author,
+        createdAt: bookToDelete.createdAt,
+        id: bookToDelete.id,
+        description: bookToDelete.description,
+        imageUrl: bookToDelete.imageUrl,
+        price: bookToDelete.price,
+        publicationDate: bookToDelete.publicationDate,
+        published: bookToDelete.published,
+        title: bookToDelete.title,
+        seller: {
+          connect: {
+            id: bookToDelete.seller,
+          },
+        },
+      },
     });
-
-    console.log(`/book/${bookToDelete.id}`);
 
     await request(app.getHttpServer())
       .delete(`/book/${bookToDelete.id}`)
+      .set(
+        'Authorization',
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InFqZWU3M2c5Mnh3bHNkMzNvZnhxdnA1dCIsImVtYWlsIjoiYWxleGlzQGljbG91ZC5jb20iLCJuYW1lIjoiYWxleGlzIiwicm9sZSI6IlNFTExFUiIsImF2YXRhclVybCI6IiIsImlhdCI6MTY4NjMxNjMzMCwiZXhwIjoxNjg2NDAyNzMwfQ.4PbkmZmGC85NpOPJI1cMpnI5KsElADp_YiG2wUT5BW4',
+      )
       .send()
       .expect(200);
 
