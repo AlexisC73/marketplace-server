@@ -6,10 +6,12 @@ export class InMemoryFileRepository implements FileRepository {
     file,
     fileName,
     mimetype,
+    saveDirectory,
   }: {
     file: Buffer;
     fileName: string;
     mimetype: string;
+    saveDirectory: string;
   }): Promise<string> {
     this.files[fileName] = file;
     return Promise.resolve(fileName);

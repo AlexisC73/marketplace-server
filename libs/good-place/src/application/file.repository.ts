@@ -7,5 +7,6 @@ export abstract class FileRepository {
     file: Buffer;
     fileName: string;
     mimetype: string;
+    saveDirectory: string;
   }): Promise<string>;
 }

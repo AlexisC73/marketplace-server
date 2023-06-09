@@ -7,8 +7,6 @@ export class S3FileRepository implements FileRepository {
   });
 
   constructor(
-    private readonly defaultImageUrl: string = process.env
-      .AWS_S3_IMAGE_DEFAULT_URL,
     private readonly bucketName: string = process.env.AWS_S3_BUCKET_NAME,
   ) {}
 
@@ -16,21 +14,24 @@ export class S3FileRepository implements FileRepository {
     file,
     fileName,
     mimetype,
+    saveDirectory,
   }: {
     file: Buffer;
     fileName: string;
     mimetype: string;
+    saveDirectory: string;
   }): Promise<string> {
     await this.s3Client.send(
       new PutObjectCommand({
         Bucket: this.bucketName,
-        Key: 'avatar/' + fileName,
+        Key: saveDirectory + '/' + fileName,
         Body: file,
         ContentType: mimetype,
         ACL: 'public-read',
       }),
     );
 
-    return `${this.defaultImageUrl}/avatar/${fileName}`;
+    // return `${this.defaultImageUrl}/avatar/${fileName}`;
+    return `https://${this.bucketName}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/avatar/${fileName}`;
   }
 }

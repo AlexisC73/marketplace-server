@@ -30,6 +30,7 @@ describe('Upload Avatar', () => {
       fileName: 'test.jpg',
       mimetype: 'image/jpg',
       userId: 'test-user',
+      saveDirectory: 'avatar',
     });
     await fixture.thenUsersAvatarUrlShouldBe({ user, url: 'test.jpg' });
   });
@@ -41,6 +42,7 @@ describe('Upload Avatar', () => {
       fileName: 'test.txt',
       mimetype: 'text/plain',
       userId: '1',
+      saveDirectory: 'avatar',
     });
     fixture.thenErrorShouldBe(InvalidTypeError);
   });
@@ -53,6 +55,7 @@ describe('Upload Avatar', () => {
       fileName: 'test.jpg',
       mimetype: 'image/jpg',
       userId: 'test-user',
+      saveDirectory: 'avatar',
     });
 
     fixture.thenErrorShouldBe(UserNotFoundError);
@@ -93,12 +96,3 @@ const createFixture = () => {
 };
 
 type Fixture = ReturnType<typeof createFixture>;
-
-// test('test', async () => {
-//   const request = await fetch(
-//     'https://f.hellowork.com/blogdumoderateur/2013/10/google-logo.png',
-//   );
-
-//   const response = await request.arrayBuffer();
-//   console.log(Buffer.from(response));
-// });

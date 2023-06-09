@@ -56,6 +56,7 @@ export class UserService {
         image: await file.toBuffer(),
         mimetype: file.mimetype,
         userId: req.user.id,
+        saveDirectory: 'avatar',
       };
 
       await this.uploadAvatarUseCase.handle(uploadAvatarCommand);

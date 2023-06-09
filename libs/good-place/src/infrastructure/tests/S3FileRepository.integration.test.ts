@@ -2,19 +2,17 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import { S3FileRepository } from '../S3FileRepository';
-import * as fs from 'fs';
-import * as path from 'path';
 import { DeleteObjectCommand, S3Client } from '@aws-sdk/client-s3';
 
 const bucketName = process.env.AWS_S3_TEST_BUCKET_NAME;
-const defaultImageUrl = process.env.AWS_S3_IMAGE_TEST_URL;
+const saveDirectory = 'avatar';
 
 describe('S3FileRepository', () => {
   let s3FileRepository: S3FileRepository;
   let fileNameToDelete: string[] = [];
 
   beforeAll(() => {
-    s3FileRepository = new S3FileRepository(defaultImageUrl, bucketName);
+    s3FileRepository = new S3FileRepository(bucketName);
   });
 
   beforeEach(async () => {
@@ -38,6 +36,7 @@ describe('S3FileRepository', () => {
       file,
       fileName,
       mimetype,
+      saveDirectory: saveDirectory,
     });
     fileNameToDelete.push(fileName);
 
@@ -59,7 +58,7 @@ async function cleanFile(fileNames: string[], s3Client: S3Client) {
       await s3Client.send(
         new DeleteObjectCommand({
           Bucket: bucketName,
-          Key: fileName,
+          Key: saveDirectory + '/' + fileName,
         }),
       );
     }),

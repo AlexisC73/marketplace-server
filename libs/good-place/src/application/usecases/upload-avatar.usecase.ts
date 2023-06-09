@@ -18,6 +18,7 @@ export class UploadAvatarUseCase {
       file: uploadAvatarCommand.image,
       fileName: uploadAvatarCommand.fileName,
       mimetype: uploadAvatarCommand.mimetype,
+      saveDirectory: uploadAvatarCommand.saveDirectory,
     });
 
     const userToUpdate = await this.userRepository.findOneById(
@@ -40,4 +41,5 @@ export type UploadAvatarCommand = {
   fileName: string;
   mimetype: string;
   userId: string;
+  saveDirectory: string;
 };
