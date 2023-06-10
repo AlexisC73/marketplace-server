@@ -17,7 +17,7 @@ describe('Upload Avatar', () => {
 
     const user = userBuilder()
       .withId('test-user')
-      .withAvatarUrl('default-avatar-url')
+      .withAvatarUrl('avatar/default-avatar.jpeg')
       .build();
     userFixture.givenUserExist([user]);
 

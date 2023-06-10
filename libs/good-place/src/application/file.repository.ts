@@ -9,4 +9,6 @@ export abstract class FileRepository {
     mimetype: string;
     saveDirectory: string;
   }): Promise<string>;
+
+  abstract delete(image: string): Promise<void>;
 }

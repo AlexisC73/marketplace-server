@@ -13,7 +13,19 @@ export class InMemoryFileRepository implements FileRepository {
     mimetype: string;
     saveDirectory: string;
   }): Promise<string> {
-    this.files[fileName] = file;
+    const imageName = saveDirectory + '/' + fileName;
+    this.files[imageName] = file;
     return Promise.resolve(fileName);
+  }
+
+  delete(image: string): Promise<void> {
+    if (!image) {
+      return;
+    }
+    if (image === 'avatar/default-avatar.jpeg') {
+      return;
+    } else {
+      delete this.files[image];
+    }
   }
 }

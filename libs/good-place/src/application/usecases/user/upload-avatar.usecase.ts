@@ -30,6 +30,8 @@ export class UploadAvatarUseCase {
       saveDirectory: uploadAvatarCommand.saveDirectory,
     });
 
+    await this.fileRepository.delete(user.avatarUrl);
+
     const userToUpdate = await this.userRepository.findOneById(
       uploadAvatarCommand.userId,
     );

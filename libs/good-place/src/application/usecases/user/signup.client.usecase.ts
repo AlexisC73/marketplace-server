@@ -43,7 +43,8 @@ export class SignupUseCase {
       password: hashedPassword,
       role: signupRole,
       createdAt: this.dateProdiver.getNow(),
-      avatarUrl: 'default-avatar.png',
+      avatarUrl:
+        'https://dev-thebookplace.s3.eu-west-2.amazonaws.com/avatar/default-avatar.jpeg',
     });
     await this.userRepository.save(user);
   }
@@ -56,5 +57,3 @@ export type SignupUserCommand = {
   password: string;
   role: string;
 };
-
-

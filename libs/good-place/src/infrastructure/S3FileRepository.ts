@@ -1,4 +1,8 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { FileRepository } from '../application/file.repository';
 
 export class S3FileRepository implements FileRepository {
@@ -31,7 +35,22 @@ export class S3FileRepository implements FileRepository {
       }),
     );
 
-    // return `${this.defaultImageUrl}/avatar/${fileName}`;
     return `https://${this.bucketName}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/avatar/${fileName}`;
+  }
+
+  async delete(imageUrl: string): Promise<void> {
+    const image = imageUrl.split('amazonaws.com/').pop();
+    if (!image) {
+      return;
+    }
+    if (image === 'avatar/default-avatar.jpeg') {
+      return;
+    }
+    await this.s3Client.send(
+      new DeleteObjectCommand({
+        Bucket: this.bucketName,
+        Key: image,
+      }),
+    );
   }
 }

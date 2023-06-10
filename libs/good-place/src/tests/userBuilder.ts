@@ -7,7 +7,7 @@ export const userBuilder = ({
   password = 'password',
   role = Role.CLIENT,
   createdAt = new Date('2023-06-02T12:00:00Z'),
-  avatarUrl = 'default-avatar.png',
+  avatarUrl = 'https://dev-thebookplace.s3.eu-west-2.amazonaws.com/avatar/default-avatar.jpeg',
 }: {
   id?: string;
   name?: string;
