@@ -8,8 +8,8 @@ export class PrismaUserRepository implements UserRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
   async save(user: User) {
-    await this.prisma.user.create({
-      data: {
+    await this.prisma.user.upsert({
+      create: {
         id: user.id,
         email: user.email,
         password: user.password,
@@ -17,6 +17,16 @@ export class PrismaUserRepository implements UserRepository {
         name: user.name,
         role: Role[user.role],
         avatarUrl: user.avatarUrl,
+      },
+      update: {
+        email: user.email,
+        password: user.password,
+        name: user.name,
+        role: Role[user.role],
+        avatarUrl: user.avatarUrl,
+      },
+      where: {
+        id: user.id,
       },
     });
   }

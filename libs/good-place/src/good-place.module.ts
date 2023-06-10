@@ -9,6 +9,7 @@ import { UserRepository } from './application/user.repository';
 import { UploadAvatarUseCase } from './application/usecases/user/upload-avatar.usecase';
 import { FileRepository } from './application/file.repository';
 import { HashService } from './application/hash.service';
+import { UpdateUserInfoUseCase } from './application/usecases/user/update-info.usecase';
 
 @Global()
 @Module({
@@ -31,6 +32,7 @@ export class GoodPlaceModule {
         DeleteBookUseCase,
         SignupUseCase,
         UploadAvatarUseCase,
+        UpdateUserInfoUseCase,
         { provide: BookRepository, useClass: providers.BookRepository },
         { provide: PrismaClient, useClass: providers.PrismaClient },
         { provide: DateProvider, useClass: providers.DateProvider },
@@ -43,6 +45,7 @@ export class GoodPlaceModule {
         DeleteBookUseCase,
         SignupUseCase,
         UploadAvatarUseCase,
+        UpdateUserInfoUseCase,
       ],
     };
   }

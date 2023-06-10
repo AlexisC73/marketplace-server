@@ -4,7 +4,6 @@ import {
 } from '@app/good-place/application/usecases/user/signup.client.usecase';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { createId } from '@paralleldrive/cuid2';
-import * as bcrypt from 'bcrypt';
 import { CreateUserDTO } from './dto/create-user.dto';
 import {
   UploadAvatarCommand,
@@ -12,6 +11,8 @@ import {
 } from '@app/good-place/application/usecases/user/upload-avatar.usecase';
 import { SavedMultipartFile } from '@fastify/multipart';
 import { PrismaService } from '@app/good-place/infrastructure/prisma/prisma.service';
+import { UpdateUserInfoDTO } from './dto/update-user-info.dto';
+import { UpdateUserInfoUseCase } from '@app/good-place/application/usecases/user/update-info.usecase';
 
 @Injectable()
 export class UserService {
@@ -19,6 +20,7 @@ export class UserService {
     private readonly signupUseCase: SignupUseCase,
     private readonly uploadAvatarUseCase: UploadAvatarUseCase,
     private readonly prismaService: PrismaService,
+    private readonly updateUserInfoUseCase: UpdateUserInfoUseCase,
   ) {}
 
   async signup({ name, email, role, password }: CreateUserDTO) {
@@ -42,11 +44,10 @@ export class UserService {
       const file: SavedMultipartFile = await req.file();
       const user = req.user;
 
-      if (!user) {
-        throw new BadRequestException('User not found, try to log again.');
-      }
-      if (!user.id) {
-        throw new BadRequestException('User id not found, try to log again.');
+      if (!user?.id) {
+        throw new BadRequestException(
+          'An error occurred with your authentification, please logout and try again.',
+        );
       }
 
       const extension = file.filename.split('.').pop();
@@ -72,8 +73,24 @@ export class UserService {
       where: { id: user.id },
     });
     if (!fundUser) {
-      throw new BadRequestException('User not found, try to log again.');
+      throw new BadRequestException(
+        'An error occurred with your authentification, please logout and try again.',
+      );
     }
     return { data: { avatarUrl: fundUser.avatarUrl } };
+  }
+
+  async updateInfo(req: any, body: UpdateUserInfoDTO) {
+    try {
+      await this.updateUserInfoUseCase.handle({
+        id: req.user.id,
+        email: body.email,
+        name: body.name,
+      });
+    } catch (err) {
+      throw new BadRequestException(
+        "An error occurred while updating user's info, please try again.",
+      );
+    }
   }
 }

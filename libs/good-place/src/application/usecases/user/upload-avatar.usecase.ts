@@ -10,6 +10,14 @@ export class UploadAvatarUseCase {
   ) {}
 
   async handle(uploadAvatarCommand: UploadAvatarCommand) {
+    const user = await this.userRepository.findOneById(
+      uploadAvatarCommand.userId,
+    );
+
+    if (!user) {
+      throw new UserNotFoundError();
+    }
+
     const acceptedMimetypes = ['image/jpeg', 'image/png', 'image/jpg'];
     if (!acceptedMimetypes.includes(uploadAvatarCommand.mimetype)) {
       throw new InvalidTypeError();

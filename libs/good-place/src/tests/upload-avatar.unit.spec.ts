@@ -1,19 +1,15 @@
 import {
   InvalidTypeError,
-  UploadAvatarCommand,
-  UploadAvatarUseCase,
   UserNotFoundError,
 } from '../application/usecases/user/upload-avatar.usecase';
-import { InMemoryFileRepository } from '../infrastructure/in-memory-file.repository';
-import { User } from '../domain/user';
-import { InMemoryUserRepository } from '../infrastructure/in-memory-user.repository';
 import { userBuilder } from './userBuilder';
+import { UserFixture, createUserFixture } from './userFixture';
 
 describe('Upload Avatar', () => {
-  let fixture: Fixture;
+  let userFixture: UserFixture;
 
   beforeEach(() => {
-    fixture = createFixture();
+    userFixture = createUserFixture();
   });
 
   test('should save image', async () => {
@@ -23,34 +19,35 @@ describe('Upload Avatar', () => {
       .withId('test-user')
       .withAvatarUrl('default-avatar-url')
       .build();
-    fixture.givenUserExists([user]);
+    userFixture.givenUserExist([user]);
 
-    await fixture.whenUserUploadAvatar({
+    await userFixture.whenUserUploadAvatar({
       image: fakeFile,
       fileName: 'test.jpg',
       mimetype: 'image/jpg',
       userId: 'test-user',
       saveDirectory: 'avatar',
     });
-    await fixture.thenUsersAvatarUrlShouldBe({ user, url: 'test.jpg' });
+    await userFixture.thenUsersAvatarUrlShouldBe({ user, url: 'test.jpg' });
   });
 
   test('should not save file if mimetype not accepted', async () => {
     const fakeFile = Buffer.from('fake-file');
-    await fixture.whenUserUploadAvatar({
+    userFixture.givenUserExist([userBuilder().withId('1').build()]);
+    await userFixture.whenUserUploadAvatar({
       image: fakeFile,
       fileName: 'test.txt',
       mimetype: 'text/plain',
       userId: '1',
       saveDirectory: 'avatar',
     });
-    fixture.thenErrorShouldBe(InvalidTypeError);
+    userFixture.thenErrorShouldBe(InvalidTypeError);
   });
 
   test('should return error if user not exist', async () => {
     const fakeFile = Buffer.from('fake-file');
 
-    await fixture.whenUserUploadAvatar({
+    await userFixture.whenUserUploadAvatar({
       image: fakeFile,
       fileName: 'test.jpg',
       mimetype: 'image/jpg',
@@ -58,41 +55,6 @@ describe('Upload Avatar', () => {
       saveDirectory: 'avatar',
     });
 
-    fixture.thenErrorShouldBe(UserNotFoundError);
+    userFixture.thenErrorShouldBe(UserNotFoundError);
   });
 });
-
-const createFixture = () => {
-  const userRepository = new InMemoryUserRepository();
-  const fileRepository = new InMemoryFileRepository();
-  const uploadAvatarUseCase = new UploadAvatarUseCase(
-    fileRepository,
-    userRepository,
-  );
-  let thrownError: Error;
-
-  return {
-    givenUserExists: (users: User[]) => {
-      userRepository.users = users.map((u) => u.data);
-    },
-    whenUserUploadAvatar: async (uploadAvatarCommand: UploadAvatarCommand) => {
-      try {
-        await uploadAvatarUseCase.handle(uploadAvatarCommand);
-      } catch (err) {
-        thrownError = err;
-      }
-    },
-    thenUsersAvatarUrlShouldBe: async (expectedUserAvatar: {
-      user: User;
-      url: string;
-    }) => {
-      const user = await userRepository.findOneById(expectedUserAvatar.user.id);
-      expect(user.avatarUrl).toBe(expectedUserAvatar.url);
-    },
-    thenErrorShouldBe: (expectedError: new () => Error) => {
-      expect(thrownError).toBeInstanceOf(expectedError);
-    },
-  };
-};
-
-type Fixture = ReturnType<typeof createFixture>;

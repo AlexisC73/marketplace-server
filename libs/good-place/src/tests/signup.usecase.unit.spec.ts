@@ -1,27 +1,23 @@
 import {
   BadRequestError,
-  SignupUseCase,
-  SignupUserCommand,
   UnauthorizedError,
 } from '../application/usecases/user/signup.client.usecase';
-import { Role, User } from '../domain/user';
-import { InMemoryUserRepository } from '../infrastructure/in-memory-user.repository';
-import { StubDateProvider } from '../infrastructure/stub-date.provider';
-import { StubHashService } from '../infrastructure/stub-hash.service';
+import { Role } from '../domain/user';
 import { userBuilder } from './userBuilder';
+import { UserFixture, createUserFixture } from './userFixture';
 
 describe('SignupUseCase', () => {
-  let fixture: Fixture;
+  let userFixture: UserFixture;
 
   beforeEach(() => {
-    fixture = createFixture();
+    userFixture = createUserFixture();
   });
 
   describe('Rule: A new user can only signup as client or seller', () => {
     test('when alice signup as client, her account should be created with client role', async () => {
-      fixture.givenNowIs(new Date('2023-06-02T12:00:00Z'));
+      userFixture.givenNowIs(new Date('2023-06-02T12:00:00Z'));
 
-      await fixture.whenNewUserSignup({
+      await userFixture.whenNewUserSignup({
         id: 'test-id',
         name: 'Alice',
         email: 'alice@test.fr',
@@ -29,7 +25,7 @@ describe('SignupUseCase', () => {
         password: 'password',
       });
 
-      fixture.thenUserAccountShouldExist(
+      userFixture.thenUserAccountShouldExist(
         userBuilder()
           .withId('test-id')
           .withName('Alice')
@@ -42,8 +38,8 @@ describe('SignupUseCase', () => {
     });
 
     test('when alice signup as seller, her account should be created with seller role', async () => {
-      fixture.givenNowIs(new Date('2023-06-02T12:00:00Z'));
-      await fixture.whenNewUserSignup({
+      userFixture.givenNowIs(new Date('2023-06-02T12:00:00Z'));
+      await userFixture.whenNewUserSignup({
         id: 'test-id',
         name: 'Alice',
         email: 'alice@test.fr',
@@ -51,7 +47,7 @@ describe('SignupUseCase', () => {
         password: 'password',
       });
 
-      fixture.thenUserAccountShouldExist(
+      userFixture.thenUserAccountShouldExist(
         userBuilder()
           .withId('test-id')
           .withName('Alice')
@@ -64,9 +60,9 @@ describe('SignupUseCase', () => {
     });
 
     test('when alice signup as admin, her account should not be created', async () => {
-      fixture.givenNowIs(new Date('2023-06-02T12:00:00Z'));
+      userFixture.givenNowIs(new Date('2023-06-02T12:00:00Z'));
 
-      await fixture.whenNewUserSignup({
+      await userFixture.whenNewUserSignup({
         id: 'test-id',
         name: 'Alice',
         email: 'alice@test.fr',
@@ -74,14 +70,14 @@ describe('SignupUseCase', () => {
         password: 'password',
       });
 
-      fixture.thenErrorShouldBe(UnauthorizedError);
-      fixture.thenUserShouldNotExist('test-id');
+      userFixture.thenErrorShouldBe(UnauthorizedError);
+      userFixture.thenUserShouldNotExist('test-id');
     });
 
     test('when alice signup as moderator, her account should not be created', async () => {
-      fixture.givenNowIs(new Date('2023-06-02T12:00:00Z'));
+      userFixture.givenNowIs(new Date('2023-06-02T12:00:00Z'));
 
-      await fixture.whenNewUserSignup({
+      await userFixture.whenNewUserSignup({
         id: 'test-id',
         name: 'Alice',
         email: 'alice@test.fr',
@@ -89,14 +85,14 @@ describe('SignupUseCase', () => {
         password: 'password',
       });
 
-      fixture.thenErrorShouldBe(UnauthorizedError);
-      fixture.thenUserShouldNotExist('test-id');
+      userFixture.thenErrorShouldBe(UnauthorizedError);
+      userFixture.thenUserShouldNotExist('test-id');
     });
 
     test('when alice signup as unknown role, her account should not be created', async () => {
-      fixture.givenNowIs(new Date('2023-06-02T12:00:00Z'));
+      userFixture.givenNowIs(new Date('2023-06-02T12:00:00Z'));
 
-      await fixture.whenNewUserSignup({
+      await userFixture.whenNewUserSignup({
         id: 'test-id',
         name: 'Alice',
         email: 'alice@test.fr',
@@ -104,18 +100,18 @@ describe('SignupUseCase', () => {
         password: 'password',
       });
 
-      fixture.thenErrorShouldBe(UnauthorizedError);
-      fixture.thenUserShouldNotExist('test-id');
+      userFixture.thenErrorShouldBe(UnauthorizedError);
+      userFixture.thenUserShouldNotExist('test-id');
     });
   });
   describe('Rule: Email must be unique', () => {
     test('Alice can not signup with same email multiple times', async () => {
-      fixture.givenNowIs(new Date('2023-06-02T12:00:00Z'));
-      fixture.givenUserExist([
+      userFixture.givenNowIs(new Date('2023-06-02T12:00:00Z'));
+      userFixture.givenUserExist([
         userBuilder().withEmail('alice@email.fr').build(),
       ]);
 
-      await fixture.whenNewUserSignup({
+      await userFixture.whenNewUserSignup({
         id: 'test-id',
         name: 'Alice',
         email: 'alice@email.fr',
@@ -123,51 +119,7 @@ describe('SignupUseCase', () => {
         role: 'CLIENT',
       });
 
-      fixture.thenErrorShouldBe(BadRequestError);
+      userFixture.thenErrorShouldBe(BadRequestError);
     });
   });
 });
-
-const createFixture = () => {
-  const dateProvider = new StubDateProvider();
-  const userRepository = new InMemoryUserRepository();
-  const hashService = new StubHashService();
-  const signupUseCase = new SignupUseCase(
-    userRepository,
-    dateProvider,
-    hashService,
-  );
-  let thrownError: Error;
-
-  return {
-    givenNowIs: (_now: Date) => {
-      dateProvider.now = _now;
-    },
-    givenUserExist: (users: User[]) => {
-      users.map((u) => userRepository.save(u));
-    },
-    whenNewUserSignup: async (signupUserCommand: SignupUserCommand) => {
-      try {
-        await signupUseCase.handle(signupUserCommand);
-      } catch (err) {
-        thrownError = err;
-      }
-    },
-    thenUserAccountShouldExist: (expectedUser: User) => {
-      const fundUser = userRepository.users.find(
-        (u) => u.id === expectedUser.id,
-      );
-
-      expect(fundUser).toEqual(expectedUser.data);
-    },
-    thenErrorShouldBe: (expectedError: new () => Error) => {
-      expect(thrownError).toBeInstanceOf(expectedError);
-    },
-    thenUserShouldNotExist: (id: string) => {
-      const fundUser = userRepository.users.find((u) => u.id === id);
-      expect(fundUser).toBeUndefined();
-    },
-  };
-};
-
-type Fixture = ReturnType<typeof createFixture>;
