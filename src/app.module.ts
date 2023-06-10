@@ -11,6 +11,7 @@ import { AuthGuard } from './auth.guard';
 import { RoleGuard } from './role.guard';
 import { ConfigModule } from '@nestjs/config';
 import { S3FileRepository } from '@app/good-place/infrastructure/S3FileRepository';
+import { BcryptHashService } from '@app/good-place/infrastructure/bcrypt-hash.service';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { S3FileRepository } from '@app/good-place/infrastructure/S3FileRepositor
       DateProvider: RealDateProvider,
       UserRepository: PrismaUserRepository,
       FileRepository: S3FileRepository,
+      HashService: BcryptHashService,
     }),
     BookModule,
     UserModule,

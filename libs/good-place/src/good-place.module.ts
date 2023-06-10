@@ -8,6 +8,7 @@ import { SignupUseCase } from './application/usecases/signup.client.usecase';
 import { UserRepository } from './application/user.repository';
 import { UploadAvatarUseCase } from './application/usecases/upload-avatar.usecase';
 import { FileRepository } from './application/file.repository';
+import { HashService } from './application/hash.service';
 
 @Global()
 @Module({
@@ -21,6 +22,7 @@ export class GoodPlaceModule {
     DateProvider: ClassProvider<DateProvider>['useClass'];
     UserRepository: ClassProvider<UserRepository>['useClass'];
     FileRepository: ClassProvider<FileRepository>['useClass'];
+    HashService: ClassProvider<HashService>['useClass'];
   }): DynamicModule {
     return {
       module: GoodPlaceModule,
@@ -34,6 +36,7 @@ export class GoodPlaceModule {
         { provide: DateProvider, useClass: providers.DateProvider },
         { provide: UserRepository, useClass: providers.UserRepository },
         { provide: FileRepository, useClass: providers.FileRepository },
+        { provide: HashService, useClass: providers.HashService },
       ],
       exports: [
         AddBookUseCase,

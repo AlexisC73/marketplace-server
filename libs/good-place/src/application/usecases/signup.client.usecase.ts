@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { Role, User } from '../../domain/user';
 import { DateProvider } from '../date.provider';
 import { UserRepository } from '../user.repository';
+import { HashService } from '../hash.service';
 
 @Injectable()
 export class SignupUseCase {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly dateProdiver: DateProvider,
+    private readonly hashService: HashService,
   ) {}
 
   async handle(signupUserCommand: SignupUserCommand) {
@@ -29,11 +31,15 @@ export class SignupUseCase {
       throw new BadRequestError('User already exists');
     }
 
+    const hashedPassword = await this.hashService.hash(
+      signupUserCommand.password,
+    );
+
     const user: User = User.fromData({
       id: signupUserCommand.id,
       name: signupUserCommand.name,
       email: signupUserCommand.email,
-      password: signupUserCommand.password,
+      password: hashedPassword,
       role: signupRole,
       createdAt: this.dateProdiver.getNow(),
       avatarUrl: 'default-avatar.png',

@@ -7,6 +7,7 @@ import {
 import { Role, User } from '../domain/user';
 import { InMemoryUserRepository } from '../infrastructure/in-memory-user.repository';
 import { StubDateProvider } from '../infrastructure/stub-date.provider';
+import { StubHashService } from '../infrastructure/stub-hash.service';
 import { userBuilder } from './userBuilder';
 
 describe('SignupUseCase', () => {
@@ -130,7 +131,12 @@ describe('SignupUseCase', () => {
 const createFixture = () => {
   const dateProvider = new StubDateProvider();
   const userRepository = new InMemoryUserRepository();
-  const signupUseCase = new SignupUseCase(userRepository, dateProvider);
+  const hashService = new StubHashService();
+  const signupUseCase = new SignupUseCase(
+    userRepository,
+    dateProvider,
+    hashService,
+  );
   let thrownError: Error;
 
   return {
