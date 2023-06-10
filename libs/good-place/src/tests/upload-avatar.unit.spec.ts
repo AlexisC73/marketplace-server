@@ -3,7 +3,7 @@ import {
   UploadAvatarCommand,
   UploadAvatarUseCase,
   UserNotFoundError,
-} from '../application/usecases/upload-avatar.usecase';
+} from '../application/usecases/user/upload-avatar.usecase';
 import { InMemoryFileRepository } from '../infrastructure/in-memory-file.repository';
 import { User } from '../domain/user';
 import { InMemoryUserRepository } from '../infrastructure/in-memory-user.repository';

@@ -1,7 +1,7 @@
 import {
   SignupUseCase,
   SignupUserCommand,
-} from '@app/good-place/application/usecases/signup.client.usecase';
+} from '@app/good-place/application/usecases/user/signup.client.usecase';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { createId } from '@paralleldrive/cuid2';
 import * as bcrypt from 'bcrypt';
@@ -9,7 +9,7 @@ import { CreateUserDTO } from './dto/create-user.dto';
 import {
   UploadAvatarCommand,
   UploadAvatarUseCase,
-} from '@app/good-place/application/usecases/upload-avatar.usecase';
+} from '@app/good-place/application/usecases/user/upload-avatar.usecase';
 import { SavedMultipartFile } from '@fastify/multipart';
 import { PrismaService } from '@app/good-place/infrastructure/prisma/prisma.service';
 

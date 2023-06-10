@@ -1,7 +1,7 @@
 import {
   AddBookCommand,
   AddBookUseCase,
-} from '@app/good-place/application/usecases/add-book.usecase';
+} from '@app/good-place/application/usecases/book/add-book.usecase';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { AddBookDTO } from './dto/add-book-dto';
 import { createId } from '@paralleldrive/cuid2';

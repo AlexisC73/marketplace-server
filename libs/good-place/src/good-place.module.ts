@@ -1,12 +1,12 @@
 import { Module, ClassProvider, DynamicModule, Global } from '@nestjs/common';
 import { BookRepository } from './application/book.repository';
-import { AddBookUseCase } from './application/usecases/add-book.usecase';
+import { AddBookUseCase } from './application/usecases/book/add-book.usecase';
 import { PrismaClient } from '@prisma/client';
 import { DateProvider } from './application/date.provider';
-import { DeleteBookUseCase } from './application/usecases/delete-book.usecase';
-import { SignupUseCase } from './application/usecases/signup.client.usecase';
+import { DeleteBookUseCase } from './application/usecases/book/delete-book.usecase';
+import { SignupUseCase } from './application/usecases/user/signup.client.usecase';
 import { UserRepository } from './application/user.repository';
-import { UploadAvatarUseCase } from './application/usecases/upload-avatar.usecase';
+import { UploadAvatarUseCase } from './application/usecases/user/upload-avatar.usecase';
 import { FileRepository } from './application/file.repository';
 import { HashService } from './application/hash.service';
 

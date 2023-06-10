@@ -1,7 +1,7 @@
 import {
   AddBookCommand,
   AddBookUseCase,
-} from '../application/usecases/add-book.usecase';
+} from '../application/usecases/book/add-book.usecase';
 import { Book } from '../domain/book';
 import { InMemoryBookRepository } from '../infrastructure/in-memory-book.repository';
 import { StubDateProvider } from '../infrastructure/stub-date.provider';

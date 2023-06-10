@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Role, User } from '../../domain/user';
-import { DateProvider } from '../date.provider';
-import { UserRepository } from '../user.repository';
-import { HashService } from '../hash.service';
+import { Role, User } from '../../../domain/user';
+import { DateProvider } from '../../date.provider';
+import { UserRepository } from '../../user.repository';
+import { HashService } from '../../hash.service';
 
 @Injectable()
 export class SignupUseCase {

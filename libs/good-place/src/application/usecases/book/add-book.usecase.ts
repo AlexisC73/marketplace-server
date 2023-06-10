@@ -1,6 +1,6 @@
-import { Book } from '../../domain/book';
-import { BookRepository } from '../book.repository';
-import { DateProvider } from '../date.provider';
+import { Book } from '../../../domain/book';
+import { BookRepository } from '../../book.repository';
+import { DateProvider } from '../../date.provider';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

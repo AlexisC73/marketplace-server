@@ -3,7 +3,7 @@ import {
   SignupUseCase,
   SignupUserCommand,
   UnauthorizedError,
-} from '../application/usecases/signup.client.usecase';
+} from '../application/usecases/user/signup.client.usecase';
 import { Role, User } from '../domain/user';
 import { InMemoryUserRepository } from '../infrastructure/in-memory-user.repository';
 import { StubDateProvider } from '../infrastructure/stub-date.provider';
