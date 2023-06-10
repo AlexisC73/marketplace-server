@@ -7,6 +7,10 @@ import {
   UpdateUserInfoUseCase,
 } from '../application/usecases/user/update-info.usecase';
 import {
+  UpdateUserPasswordCommand,
+  UpdateUserPasswordUseCase,
+} from '../application/usecases/user/update-password.usecase';
+import {
   UploadAvatarCommand,
   UploadAvatarUseCase,
 } from '../application/usecases/user/upload-avatar.usecase';
@@ -30,6 +34,10 @@ export const createUserFixture = () => {
   const uploadAvatarUseCase = new UploadAvatarUseCase(
     fileRepository,
     userRepository,
+  );
+  const updateUserPasswordUseCase = new UpdateUserPasswordUseCase(
+    userRepository,
+    hashService,
   );
 
   let thrownError: Error;
@@ -60,6 +68,15 @@ export const createUserFixture = () => {
     ) => {
       try {
         await updateUserInfoUseCase.handle(updateUserInfoCommand);
+      } catch (err) {
+        thrownError = err;
+      }
+    },
+    whenUserUpdatePassword: async (
+      updatePasswordCommand: UpdateUserPasswordCommand,
+    ) => {
+      try {
+        await updateUserPasswordUseCase.handle(updatePasswordCommand);
       } catch (err) {
         thrownError = err;
       }

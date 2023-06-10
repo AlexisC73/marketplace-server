@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { FileRepository } from '../../file.repository';
 import { UserRepository } from '../../user.repository';
+import { InvalidTypeError, UserNotFoundError } from '../error/error';
 
 @Injectable()
 export class UploadAvatarUseCase {
@@ -40,9 +41,6 @@ export class UploadAvatarUseCase {
     await this.userRepository.updateAvatar(userToUpdate, savedUrl);
   }
 }
-
-export class InvalidTypeError extends Error {}
-export class UserNotFoundError extends Error {}
 
 export type UploadAvatarCommand = {
   image: Buffer;

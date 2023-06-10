@@ -1,7 +1,7 @@
 import {
   BadRequestError,
   UnauthorizedError,
-} from '../application/usecases/user/signup.client.usecase';
+} from '../application/usecases/error/error';
 import { Role } from '../domain/user';
 import { userBuilder } from './userBuilder';
 import { UserFixture, createUserFixture } from './userFixture';

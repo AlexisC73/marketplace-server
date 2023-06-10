@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { Public } from '../public.decorator';
 import { UpdateUserInfoDTO } from './dto/update-user-info.dto';
+import { UpdateUserPasswordDTO } from './dto/update-user-password.dto';
 
 @Controller('user')
 export class UserController {
@@ -27,5 +28,10 @@ export class UserController {
   @Patch('/')
   async updateInfo(@Req() req: any, @Body() body: UpdateUserInfoDTO) {
     return this.userService.updateInfo(req, body);
+  }
+
+  @Patch('/password')
+  async updatePassword(@Req() req: any, @Body() body: UpdateUserPasswordDTO) {
+    return this.userService.updatePassword(req, body);
   }
 }

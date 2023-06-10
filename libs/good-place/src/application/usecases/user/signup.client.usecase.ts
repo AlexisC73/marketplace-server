@@ -3,6 +3,7 @@ import { Role, User } from '../../../domain/user';
 import { DateProvider } from '../../date.provider';
 import { UserRepository } from '../../user.repository';
 import { HashService } from '../../hash.service';
+import { BadRequestError, UnauthorizedError } from '../error/error';
 
 @Injectable()
 export class SignupUseCase {
@@ -56,16 +57,4 @@ export type SignupUserCommand = {
   role: string;
 };
 
-export class UnauthorizedError extends Error {
-  constructor(message?: string) {
-    super(message);
-    this.name = 'UnauthorizedError';
-  }
-}
 
-export class BadRequestError extends Error {
-  constructor(message?: string) {
-    super(message);
-    this.name = 'BadRequestError';
-  }
-}

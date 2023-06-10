@@ -13,6 +13,11 @@ import { SavedMultipartFile } from '@fastify/multipart';
 import { PrismaService } from '@app/good-place/infrastructure/prisma/prisma.service';
 import { UpdateUserInfoDTO } from './dto/update-user-info.dto';
 import { UpdateUserInfoUseCase } from '@app/good-place/application/usecases/user/update-info.usecase';
+import { UpdateUserPasswordDTO } from './dto/update-user-password.dto';
+import {
+  UpdateUserPasswordCommand,
+  UpdateUserPasswordUseCase,
+} from '@app/good-place/application/usecases/user/update-password.usecase';
 
 @Injectable()
 export class UserService {
@@ -21,6 +26,7 @@ export class UserService {
     private readonly uploadAvatarUseCase: UploadAvatarUseCase,
     private readonly prismaService: PrismaService,
     private readonly updateUserInfoUseCase: UpdateUserInfoUseCase,
+    private readonly updateUserPasswordUseCase: UpdateUserPasswordUseCase,
   ) {}
 
   async signup({ name, email, role, password }: CreateUserDTO) {
@@ -91,6 +97,25 @@ export class UserService {
       throw new BadRequestException(
         "An error occurred while updating user's info, please try again.",
       );
+    }
+  }
+
+  async updatePassword(req: any, body: UpdateUserPasswordDTO) {
+    try {
+      const user = req.user;
+      if (!user) {
+        throw new BadRequestException();
+      }
+
+      const updateUserPasswordCommand: UpdateUserPasswordCommand = {
+        userId: user.id,
+        oldPassword: body.oldPassword,
+        newPassword: body.newPassword,
+      };
+
+      await this.updateUserPasswordUseCase.handle(updateUserPasswordCommand);
+    } catch (err) {
+      throw new BadRequestException();
     }
   }
 }

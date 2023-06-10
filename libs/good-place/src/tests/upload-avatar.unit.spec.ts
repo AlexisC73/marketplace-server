@@ -1,7 +1,7 @@
 import {
   InvalidTypeError,
   UserNotFoundError,
-} from '../application/usecases/user/upload-avatar.usecase';
+} from '../application/usecases/error/error';
 import { userBuilder } from './userBuilder';
 import { UserFixture, createUserFixture } from './userFixture';
 
