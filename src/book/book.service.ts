@@ -5,7 +5,7 @@ import {
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { AddBookDTO } from './dto/add-book-dto';
 import { createId } from '@paralleldrive/cuid2';
-import { DeleteBookUseCase } from '@app/good-place/application/usecases/delete-book.usecase';
+import { DeleteBookUseCase } from '@app/good-place/application/usecases/book/delete-book.usecase';
 
 @Injectable()
 export class BookService {
