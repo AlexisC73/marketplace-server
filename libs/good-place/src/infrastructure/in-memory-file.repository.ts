@@ -1,31 +1,30 @@
 import { FileRepository } from '../application/file.repository';
+import { File } from '../domain/file';
 
 export class InMemoryFileRepository implements FileRepository {
-  files: { [key: string]: Buffer } = {};
+  files: { [key: string]: { file: Buffer; mimetype: string } } = {};
   async save({
     file,
     fileName,
     mimetype,
     saveDirectory,
-  }: {
-    file: Buffer;
-    fileName: string;
-    mimetype: string;
-    saveDirectory: string;
-  }): Promise<string> {
-    const imageName = saveDirectory + '/' + fileName;
-    this.files[imageName] = file;
-    return Promise.resolve(fileName);
+  }: File): Promise<string> {
+    this._save({ file, fileName, mimetype, saveDirectory });
+    return Promise.resolve(saveDirectory + '/' + fileName);
   }
 
-  delete(image: string): Promise<void> {
-    if (!image) {
-      return;
-    }
-    if (image === 'avatar/default-avatar.jpeg') {
+  delete(url: string): Promise<void> {
+    if (url === 'avatar/default-avatar.jpg') {
       return;
     } else {
-      delete this.files[image];
+      delete this.files[url];
     }
+  }
+
+  _save(file: File) {
+    this.files[file.saveDirectory + '/' + file.fileName] = {
+      file: file.file,
+      mimetype: file.mimetype,
+    };
   }
 }

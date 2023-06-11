@@ -2,33 +2,83 @@ import {
   InvalidTypeError,
   UserNotFoundError,
 } from '../application/usecases/error/error';
+import { fileBuilder } from './fileBuilder';
+import { FileFixture, createFileFixture } from './fileFixture';
 import { userBuilder } from './userBuilder';
 import { UserFixture, createUserFixture } from './userFixture';
 
 describe('Upload Avatar', () => {
   let userFixture: UserFixture;
+  let fileFixture: FileFixture;
 
   beforeEach(() => {
     userFixture = createUserFixture();
+    fileFixture = createFileFixture({
+      fileRepository: userFixture.fileRepository,
+    });
   });
-
-  test('should save image', async () => {
+  test('should save image and delete previous image if not default image', async () => {
     const fakeFile = Buffer.from('fake-file');
+    const previousAvatar = fileBuilder()
+      .withFileName('fake-file.jpg')
+      .withSaveDirectory('default')
+      .build();
+
+    const previousAvatarUrl = `${previousAvatar.saveDirectory}/${previousAvatar.fileName}`;
 
     const user = userBuilder()
       .withId('test-user')
-      .withAvatarUrl('avatar/default-avatar.jpeg')
+      .withAvatarUrl(previousAvatarUrl)
       .build();
+
     userFixture.givenUserExist([user]);
+    fileFixture.givenFileExist([previousAvatar]);
 
     await userFixture.whenUserUploadAvatar({
       image: fakeFile,
       fileName: 'test.jpg',
       mimetype: 'image/jpg',
       userId: 'test-user',
-      saveDirectory: 'avatar',
+      saveDirectory: 'default',
     });
-    await userFixture.thenUsersAvatarUrlShouldBe({ user, url: 'test.jpg' });
+    await userFixture.thenUsersAvatarUrlShouldBe({
+      user,
+      url: 'default/test.jpg',
+    });
+
+    fileFixture.thenFileShouldNotExist(previousAvatarUrl);
+  });
+
+  test('should save image and dont delete previous image if its default image', async () => {
+    const fakeFile = Buffer.from('fake-file');
+    const previousAvatar = fileBuilder()
+      .withFileName('default-avatar.jpg')
+      .withSaveDirectory('avatar')
+      .build();
+
+    const previousAvatarUrl = `${previousAvatar.saveDirectory}/${previousAvatar.fileName}`;
+
+    const user = userBuilder()
+      .withId('test-user')
+      .withAvatarUrl(previousAvatarUrl)
+      .build();
+
+    userFixture.givenUserExist([user]);
+    fileFixture.givenFileExist([previousAvatar]);
+
+    await userFixture.whenUserUploadAvatar({
+      image: fakeFile,
+      fileName: 'test.jpg',
+      mimetype: 'image/jpg',
+      userId: 'test-user',
+      saveDirectory: 'default',
+    });
+    await userFixture.thenUsersAvatarUrlShouldBe({
+      user,
+      url: 'default/test.jpg',
+    });
+
+    fileFixture.thenFileShouldExist(previousAvatarUrl);
   });
 
   test('should not save file if mimetype not accepted', async () => {

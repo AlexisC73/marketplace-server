@@ -1,4 +1,6 @@
-export type File = {
+export interface File {
   file: Buffer;
-  url: string;
-};
+  fileName: string;
+  mimetype: string;
+  saveDirectory: string;
+}

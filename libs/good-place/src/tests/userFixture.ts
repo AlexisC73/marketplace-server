@@ -98,10 +98,15 @@ export const createUserFixture = () => {
       const user = await userRepository.findOneById(expectedUserAvatar.user.id);
       expect(user.avatarUrl).toBe(expectedUserAvatar.url);
     },
+    thenFileShouldNotExist: async (url: string) => {
+      const file = fileRepository.files[url];
+      expect(file).not.toBeDefined();
+    },
     thenUserShouldNotExist: (id: string) => {
       const fundUser = userRepository.users.find((u) => u.id === id);
       expect(fundUser).toBeUndefined();
     },
+    fileRepository,
   };
 };
 

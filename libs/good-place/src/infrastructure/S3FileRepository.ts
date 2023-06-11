@@ -35,7 +35,7 @@ export class S3FileRepository implements FileRepository {
       }),
     );
 
-    return `https://${this.bucketName}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/avatar/${fileName}`;
+    return `https://${this.bucketName}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/${saveDirectory}/${fileName}`;
   }
 
   async delete(imageUrl: string): Promise<void> {
