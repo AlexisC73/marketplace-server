@@ -1,4 +1,5 @@
 import { Role, User } from '../domain/user';
+import env from '../utils/env';
 
 export const userBuilder = ({
   id = 'test-id',
@@ -7,7 +8,7 @@ export const userBuilder = ({
   password = 'password',
   role = Role.CLIENT,
   createdAt = new Date('2023-06-02T12:00:00Z'),
-  avatarUrl = 'https://dev-thebookplace.s3.eu-west-2.amazonaws.com/avatar/default-avatar.jpeg',
+  avatarUrl = env.defaultImageUrl,
 }: {
   id?: string;
   name?: string;

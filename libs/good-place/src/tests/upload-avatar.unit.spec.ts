@@ -2,6 +2,7 @@ import {
   InvalidTypeError,
   UserNotFoundError,
 } from '../application/usecases/error/error';
+import env from '../utils/env';
 import { fileBuilder } from './fileBuilder';
 import { FileFixture, createFileFixture } from './fileFixture';
 import { userBuilder } from './userBuilder';
@@ -50,10 +51,12 @@ describe('Upload Avatar', () => {
   });
 
   test('should save image and dont delete previous image if its default image', async () => {
+    const [savedDirectory, fileName] = env.defaultImageUrl.split('/');
+
     const fakeFile = Buffer.from('fake-file');
     const previousAvatar = fileBuilder()
-      .withFileName('default-avatar.jpg')
-      .withSaveDirectory('avatar')
+      .withFileName(fileName)
+      .withSaveDirectory(savedDirectory)
       .build();
 
     const previousAvatarUrl = `${previousAvatar.saveDirectory}/${previousAvatar.fileName}`;

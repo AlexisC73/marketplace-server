@@ -1,5 +1,6 @@
 import { FileRepository } from '../application/file.repository';
 import { File } from '../domain/file';
+import env from '../utils/env';
 
 export class InMemoryFileRepository implements FileRepository {
   files: { [key: string]: { file: Buffer; mimetype: string } } = {};
@@ -14,7 +15,7 @@ export class InMemoryFileRepository implements FileRepository {
   }
 
   delete(url: string): Promise<void> {
-    if (url === 'avatar/default-avatar.jpg') {
+    if (url === env.defaultImageUrl) {
       return;
     } else {
       delete this.files[url];

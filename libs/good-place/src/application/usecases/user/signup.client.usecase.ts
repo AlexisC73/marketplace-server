@@ -4,6 +4,7 @@ import { DateProvider } from '../../date.provider';
 import { UserRepository } from '../../user.repository';
 import { HashService } from '../../hash.service';
 import { BadRequestError, UnauthorizedError } from '../error/error';
+import env from '@app/good-place/utils/env';
 
 @Injectable()
 export class SignupUseCase {
@@ -43,8 +44,7 @@ export class SignupUseCase {
       password: hashedPassword,
       role: signupRole,
       createdAt: this.dateProdiver.getNow(),
-      avatarUrl:
-        'https://dev-thebookplace.s3.eu-west-2.amazonaws.com/avatar/default-avatar.jpeg',
+      avatarUrl: env.defaultImageUrl,
     });
     await this.userRepository.save(user);
   }
