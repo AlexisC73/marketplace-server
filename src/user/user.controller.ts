@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Patch, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { Public } from '../public.decorator';
@@ -33,5 +41,10 @@ export class UserController {
   @Patch('/password')
   async updatePassword(@Req() req: any, @Body() body: UpdateUserPasswordDTO) {
     return this.userService.updatePassword(req, body);
+  }
+
+  @Delete('/avatar')
+  async deleteAvatar(@Req() req: any) {
+    return this.userService.deleteAvatar(req);
   }
 }

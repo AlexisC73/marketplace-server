@@ -18,6 +18,7 @@ import {
   UpdateUserPasswordCommand,
   UpdateUserPasswordUseCase,
 } from '@app/good-place/application/usecases/user/update-password.usecase';
+import { DeleteAvatarUseCase } from '@app/good-place/application/usecases/user/delete-avatar.usecase';
 
 @Injectable()
 export class UserService {
@@ -27,6 +28,7 @@ export class UserService {
     private readonly prismaService: PrismaService,
     private readonly updateUserInfoUseCase: UpdateUserInfoUseCase,
     private readonly updateUserPasswordUseCase: UpdateUserPasswordUseCase,
+    private readonly deleteAvatarUseCase: DeleteAvatarUseCase,
   ) {}
 
   async signup({ name, email, role, password }: CreateUserDTO) {
@@ -114,6 +116,18 @@ export class UserService {
       };
 
       await this.updateUserPasswordUseCase.handle(updateUserPasswordCommand);
+    } catch (err) {
+      throw new BadRequestException();
+    }
+  }
+
+  async deleteAvatar(req: any) {
+    try {
+      const user = req.user;
+      if (!user) {
+        throw new BadRequestException();
+      }
+      await this.deleteAvatarUseCase.handle({ userId: user.id });
     } catch (err) {
       throw new BadRequestException();
     }
