@@ -1,6 +1,9 @@
 import { File } from '../domain/file';
+import { InMemoryFileRepository } from '../infrastructure/in-memory-file.repository';
 
-export const createFileFixture = ({ fileRepository }) => {
+export const createFileFixture = ({
+  fileRepository = InMemoryFileRepository,
+}: { fileRepository?: any } = {}) => {
   return {
     givenFileExist: (files: File[]) => {
       files.map((f) => fileRepository._save(f));

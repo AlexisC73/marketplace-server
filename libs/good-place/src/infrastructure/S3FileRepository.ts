@@ -4,6 +4,7 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import { FileRepository } from '../application/file.repository';
+import env from '../utils/env';
 
 export class S3FileRepository implements FileRepository {
   readonly s3Client = new S3Client({
@@ -43,7 +44,7 @@ export class S3FileRepository implements FileRepository {
     if (!image) {
       return;
     }
-    if (image === 'avatar/default-avatar.jpeg') {
+    if (image === env.defaultSaveDirectory + '/default-avatar.jpeg') {
       return;
     }
     await this.s3Client.send(

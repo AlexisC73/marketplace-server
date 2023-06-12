@@ -1,4 +1,8 @@
 import {
+  DeleteAvatarCommand,
+  DeleteAvatarUseCase,
+} from '../application/usecases/user/delete-avatar.usecase';
+import {
   SignupUseCase,
   SignupUserCommand,
 } from '../application/usecases/user/signup.client.usecase';
@@ -39,6 +43,10 @@ export const createUserFixture = () => {
     userRepository,
     hashService,
   );
+  const deleteAvatarUseCase = new DeleteAvatarUseCase(
+    userRepository,
+    fileRepository,
+  );
 
   let thrownError: Error;
 
@@ -59,6 +67,13 @@ export const createUserFixture = () => {
     whenUserUploadAvatar: async (uploadAvatarCommand: UploadAvatarCommand) => {
       try {
         await uploadAvatarUseCase.handle(uploadAvatarCommand);
+      } catch (err) {
+        thrownError = err;
+      }
+    },
+    whenUserDeleteAvatar: async (deleteAvatarCommand: DeleteAvatarCommand) => {
+      try {
+        await deleteAvatarUseCase.handle(deleteAvatarCommand);
       } catch (err) {
         thrownError = err;
       }
