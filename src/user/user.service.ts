@@ -31,14 +31,14 @@ export class UserService {
     private readonly deleteAvatarUseCase: DeleteAvatarUseCase,
   ) {}
 
-  async signup({ name, email, role, password }: CreateUserDTO) {
+  async signup({ name, email, password }: CreateUserDTO) {
     const signupUserCommand: SignupUserCommand = {
       id: createId(),
       name,
       email,
       password,
-      role,
     };
+
     try {
       await this.signupUseCase.handle(signupUserCommand);
       return Promise.resolve();

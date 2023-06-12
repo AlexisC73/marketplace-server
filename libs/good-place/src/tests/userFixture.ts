@@ -7,6 +7,10 @@ import {
   SignupUserCommand,
 } from '../application/usecases/user/signup.client.usecase';
 import {
+  SignupSellerCommand,
+  SignupSellerUseCase,
+} from '../application/usecases/user/signup.seller.usecase';
+import {
   UpdateUserInfoCommand,
   UpdateUserInfoUseCase,
 } from '../application/usecases/user/update-info.usecase';
@@ -30,6 +34,11 @@ export const createUserFixture = () => {
   const fileRepository = new InMemoryFileRepository();
   const hashService = new StubHashService();
   const signupUseCase = new SignupUseCase(
+    userRepository,
+    dateProvider,
+    hashService,
+  );
+  const signupSellerUseCase = new SignupSellerUseCase(
     userRepository,
     dateProvider,
     hashService,
@@ -60,6 +69,13 @@ export const createUserFixture = () => {
     whenNewUserSignup: async (signupUserCommand: SignupUserCommand) => {
       try {
         await signupUseCase.handle(signupUserCommand);
+      } catch (err) {
+        thrownError = err;
+      }
+    },
+    whenNewSellerSignup: async (signupSellerCommand: SignupSellerCommand) => {
+      try {
+        await signupSellerUseCase.handle(signupSellerCommand);
       } catch (err) {
         thrownError = err;
       }
