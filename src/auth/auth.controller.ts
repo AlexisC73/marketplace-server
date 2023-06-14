@@ -9,8 +9,15 @@ export class AuthController {
 
   @HttpCode(200)
   @Public()
-  @Post('signin')
-  async signin(@Body() signinUserDTO: SignInUserDTO) {
-    return await this.authService.login(signinUserDTO);
+  @Post('signin/client')
+  async signinClient(@Body() signinUserDTO: SignInUserDTO) {
+    return await this.authService.signinClient(signinUserDTO);
+  }
+
+  @HttpCode(200)
+  @Public()
+  @Post('signin/seller')
+  async signinSeller(@Body() signinUserDTO: SignInUserDTO) {
+    return await this.authService.signinSeller(signinUserDTO);
   }
 }

@@ -12,13 +12,14 @@ import { CreateUserDTO } from './dto/create-user.dto';
 import { Public } from '../public.decorator';
 import { UpdateUserInfoDTO } from './dto/update-user-info.dto';
 import { UpdateUserPasswordDTO } from './dto/update-user-password.dto';
+import { CreateSellerDTO } from './dto/create-seller.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Public()
-  @Post('/signup')
+  @Post('/signup/client')
   async signup(@Body() createUserDTO: CreateUserDTO) {
     return this.userService.signup(createUserDTO);
   }
@@ -46,5 +47,11 @@ export class UserController {
   @Delete('/avatar')
   async deleteAvatar(@Req() req: any) {
     return this.userService.deleteAvatar(req);
+  }
+
+  @Public()
+  @Post('/signup/seller')
+  async signupSeller(@Body() createSellerDTO: CreateSellerDTO) {
+    return this.userService.signupSeller(createSellerDTO);
   }
 }

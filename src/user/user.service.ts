@@ -19,6 +19,11 @@ import {
   UpdateUserPasswordUseCase,
 } from '@app/good-place/application/usecases/user/update-password.usecase';
 import { DeleteAvatarUseCase } from '@app/good-place/application/usecases/user/delete-avatar.usecase';
+import { CreateSellerDTO } from './dto/create-seller.dto';
+import {
+  SignupSellerCommand,
+  SignupSellerUseCase,
+} from '@app/good-place/application/usecases/user/signup.seller.usecase';
 
 @Injectable()
 export class UserService {
@@ -29,6 +34,7 @@ export class UserService {
     private readonly updateUserInfoUseCase: UpdateUserInfoUseCase,
     private readonly updateUserPasswordUseCase: UpdateUserPasswordUseCase,
     private readonly deleteAvatarUseCase: DeleteAvatarUseCase,
+    private readonly signupSellerUseCase: SignupSellerUseCase,
   ) {}
 
   async signup({ name, email, password }: CreateUserDTO) {
@@ -130,6 +136,22 @@ export class UserService {
       await this.deleteAvatarUseCase.handle({ userId: user.id });
     } catch (err) {
       throw new BadRequestException();
+    }
+  }
+
+  async signupSeller(dto: CreateSellerDTO) {
+    try {
+      const signupSellerCommand: SignupSellerCommand = {
+        id: createId(),
+        name: dto.name,
+        email: dto.email,
+        password: dto.password,
+      };
+
+      await this.signupSellerUseCase.handle(signupSellerCommand);
+      return Promise.resolve();
+    } catch (err) {
+      throw new BadRequestException(err.message);
     }
   }
 }

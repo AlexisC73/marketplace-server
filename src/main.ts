@@ -21,6 +21,6 @@ async function bootstrap() {
     }),
   );
   app.register(FastifyMultipart);
-  await app.listen(5500);
+  await app.listen(5500, process.env.LISTEN_URL ?? '127.0.0.1');
 }
 bootstrap();

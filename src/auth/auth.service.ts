@@ -1,8 +1,13 @@
 import { PrismaService } from '@app/good-place/infrastructure/prisma/prisma.service';
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { SignInUserDTO } from './dto/signin-user.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -11,31 +16,16 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login({ email, password }: SignInUserDTO) {
-    const fundUser = await this.prismaService.user.findUnique({
-      where: { email },
+  async signinClient({ email, password }: SignInUserDTO) {
+    const fundUser = await this.prismaService.user.findFirst({
+      where: { email: email.toLocaleLowerCase(), role: { not: 'SELLER' } },
     });
-    if (!fundUser) {
-      throw new ForbiddenException();
-    }
 
-    const isPasswordValid = await bcrypt.compare(password, fundUser.password);
-    if (!isPasswordValid) {
-      throw new ForbiddenException();
-    }
+    if (!fundUser) throw new BadRequestException();
 
-    const token = await this.jwtService.signAsync(
-      {
-        id: fundUser.id,
-        email: fundUser.email,
-        name: fundUser.name,
-        role: fundUser.role,
-        avatarUrl: fundUser.avatarUrl,
-      },
-      {
-        expiresIn: '1d',
-      },
-    );
+    await this.verifyPasswordOrThrow(password, fundUser.password);
+
+    const token = await this.createToken(fundUser);
 
     return {
       id: fundUser.id,
@@ -45,5 +35,50 @@ export class AuthService {
       avatarUrl: fundUser.avatarUrl,
       access_token: token,
     };
+  }
+
+  async signinSeller(dto: SignInUserDTO) {
+    const fundUser = await this.prismaService.user.findFirst({
+      where: { email: dto.email.toLocaleLowerCase(), role: { not: 'CLIENT' } },
+    });
+
+    if (!fundUser) {
+      throw new BadRequestException();
+    }
+
+    await this.verifyPasswordOrThrow(dto.password, fundUser.password);
+
+    const token = await this.createToken(fundUser);
+
+    return {
+      id: fundUser.id,
+      email: fundUser.email,
+      name: fundUser.name,
+      role: fundUser.role,
+      avatarUrl: fundUser.avatarUrl,
+      access_token: token,
+    };
+  }
+
+  async createToken(user: User) {
+    return await this.jwtService.signAsync(
+      {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        avatarUrl: user.avatarUrl,
+      },
+      {
+        expiresIn: '1d',
+      },
+    );
+  }
+
+  async verifyPasswordOrThrow(password: string, hash: string) {
+    const isPasswordValid = await bcrypt.compare(password, hash);
+    if (!isPasswordValid) {
+      throw new ForbiddenException();
+    }
   }
 }

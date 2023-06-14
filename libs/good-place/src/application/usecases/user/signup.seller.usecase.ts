@@ -26,7 +26,7 @@ export class SignupSellerUseCase {
     const user: User = User.fromData({
       id: command.id,
       name: command.name,
-      email: command.email,
+      email: command.email.toLocaleLowerCase(),
       password: hashedPassword,
       role: Role.SELLER,
       createdAt: this.dateProdiver.getNow(),

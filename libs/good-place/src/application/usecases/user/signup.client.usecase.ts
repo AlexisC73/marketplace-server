@@ -30,7 +30,7 @@ export class SignupUseCase {
     const user: User = User.fromData({
       id: signupUserCommand.id,
       name: signupUserCommand.name,
-      email: signupUserCommand.email,
+      email: signupUserCommand.email.toLocaleLowerCase(),
       password: hashedPassword,
       role: Role.CLIENT,
       createdAt: this.dateProdiver.getNow(),
