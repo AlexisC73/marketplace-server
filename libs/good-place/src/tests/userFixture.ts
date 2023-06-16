@@ -138,6 +138,7 @@ export const createUserFixture = () => {
       expect(fundUser).toBeUndefined();
     },
     fileRepository,
+    userRepository,
   };
 };
 
