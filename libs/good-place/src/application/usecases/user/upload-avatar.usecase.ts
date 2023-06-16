@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { FileRepository } from '../../file.repository';
 import { UserRepository } from '../../user.repository';
 import { InvalidTypeError, UserNotFoundError } from '../error/error';
+import { DateProvider } from '../../date.provider';
 
 @Injectable()
 export class UploadAvatarUseCase {
   constructor(
     private readonly fileRepository: FileRepository,
     private readonly userRepository: UserRepository,
+    private readonly dateProvider: DateProvider,
   ) {}
 
   async handle(uploadAvatarCommand: UploadAvatarCommand) {
@@ -25,12 +27,17 @@ export class UploadAvatarUseCase {
     }
     const savedUrl = await this.fileRepository.save({
       file: uploadAvatarCommand.image,
-      fileName: uploadAvatarCommand.fileName,
+      fileName:
+        this.dateProvider.getNow().getTime().toString() +
+        '-' +
+        uploadAvatarCommand.fileName,
       mimetype: uploadAvatarCommand.mimetype,
       saveDirectory: uploadAvatarCommand.saveDirectory,
     });
 
-    await this.fileRepository.delete(user.avatarUrl);
+    if (savedUrl !== user.avatarUrl) {
+      await this.fileRepository.delete(user.avatarUrl);
+    }
 
     const userToUpdate = await this.userRepository.findOneById(
       uploadAvatarCommand.userId,

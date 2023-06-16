@@ -2,6 +2,7 @@ import {
   InvalidTypeError,
   UserNotFoundError,
 } from '../application/usecases/error/error';
+import { StubDateProvider } from '../infrastructure/stub-date.provider';
 import env from '../utils/env';
 import { fileBuilder } from './fileBuilder';
 import { FileFixture, createFileFixture } from './fileFixture';
@@ -11,9 +12,10 @@ import { UserFixture, createUserFixture } from './userFixture';
 describe('Upload Avatar', () => {
   let userFixture: UserFixture;
   let fileFixture: FileFixture;
+  const dateProvider = new StubDateProvider();
 
   beforeEach(() => {
-    userFixture = createUserFixture();
+    userFixture = createUserFixture({ dateProvider });
     fileFixture = createFileFixture({
       fileRepository: userFixture.fileRepository,
     });
@@ -32,8 +34,11 @@ describe('Upload Avatar', () => {
       .withAvatarUrl(previousAvatarUrl)
       .build();
 
+    const now = new Date('2021-01-01T00:00:00.000Z');
+
     userFixture.givenUserExist([user]);
     fileFixture.givenFileExist([previousAvatar]);
+    userFixture.givenNowIs(now);
 
     await userFixture.whenUserUploadAvatar({
       image: fakeFile,
@@ -42,9 +47,10 @@ describe('Upload Avatar', () => {
       userId: 'test-user',
       saveDirectory: 'default',
     });
+    const expectedName = `default/${now.getTime().toString()}-test.jpg`;
     await userFixture.thenUsersAvatarUrlShouldBe({
       user,
-      url: 'default/test.jpg',
+      url: expectedName,
     });
 
     fileFixture.thenFileShouldNotExist(previousAvatarUrl);
@@ -66,6 +72,10 @@ describe('Upload Avatar', () => {
       .withAvatarUrl(previousAvatarUrl)
       .build();
 
+    const now = new Date('2021-01-01T00:00:00.000Z');
+
+    userFixture.givenNowIs(new Date('2021-01-01T00:00:00.000Z'));
+
     userFixture.givenUserExist([user]);
     fileFixture.givenFileExist([previousAvatar]);
 
@@ -74,11 +84,11 @@ describe('Upload Avatar', () => {
       fileName: 'test.jpg',
       mimetype: 'image/jpg',
       userId: 'test-user',
-      saveDirectory: 'default',
+      saveDirectory: savedDirectory,
     });
     await userFixture.thenUsersAvatarUrlShouldBe({
       user,
-      url: 'default/test.jpg',
+      url: `${savedDirectory}/${now.getTime().toString()}-test.jpg`,
     });
 
     fileFixture.thenFileShouldExist(previousAvatarUrl);

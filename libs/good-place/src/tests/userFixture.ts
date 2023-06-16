@@ -28,8 +28,9 @@ import { InMemoryUserRepository } from '../infrastructure/in-memory-user.reposit
 import { StubDateProvider } from '../infrastructure/stub-date.provider';
 import { StubHashService } from '../infrastructure/stub-hash.service';
 
-export const createUserFixture = () => {
-  const dateProvider = new StubDateProvider();
+export const createUserFixture = ({
+  dateProvider = new StubDateProvider(),
+}: { dateProvider?: any } = {}) => {
   const userRepository = new InMemoryUserRepository();
   const fileRepository = new InMemoryFileRepository();
   const hashService = new StubHashService();
@@ -47,6 +48,7 @@ export const createUserFixture = () => {
   const uploadAvatarUseCase = new UploadAvatarUseCase(
     fileRepository,
     userRepository,
+    dateProvider,
   );
   const updateUserPasswordUseCase = new UpdateUserPasswordUseCase(
     userRepository,
