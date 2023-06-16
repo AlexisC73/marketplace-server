@@ -9,11 +9,6 @@ import {
   UploadAvatarCommand,
   UploadAvatarUseCase,
 } from '@app/good-place/application/usecases/user/upload-avatar.usecase';
-import {
-  MultipartFile,
-  MultipartValue,
-  SavedMultipartFile,
-} from '@fastify/multipart';
 import { PrismaService } from '@app/good-place/infrastructure/prisma/prisma.service';
 import { UpdateUserInfoDTO } from './dto/update-user-info.dto';
 import { UpdateUserInfoUseCase } from '@app/good-place/application/usecases/user/update-info.usecase';

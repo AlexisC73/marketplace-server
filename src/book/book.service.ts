@@ -5,12 +5,6 @@ import {
 import { BadRequestException, Body, Injectable } from '@nestjs/common';
 import { DeleteBookUseCase } from '@app/good-place/application/usecases/book/delete-book.usecase';
 import { createId } from '@paralleldrive/cuid2';
-import {
-  Multipart,
-  MultipartFields,
-  MultipartValue,
-  SavedMultipartFile,
-} from '@fastify/multipart';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
