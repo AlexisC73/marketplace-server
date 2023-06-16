@@ -5,6 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../../user.repository';
 import { Role } from '@app/good-place/domain/user';
 import { NoPrivilegeGranted } from '../error/error';
+import { FileRepository } from '../../file.repository';
 
 @Injectable()
 export class AddBookUseCase {
@@ -12,6 +13,7 @@ export class AddBookUseCase {
     private readonly bookRepository: BookRepository,
     private readonly userRepository: UserRepository,
     private readonly dateProvider: DateProvider,
+    private readonly fileRepository: FileRepository,
   ) {}
 
   async handle(addBookCommand: AddBookCommand): Promise<void> {
@@ -19,6 +21,17 @@ export class AddBookUseCase {
     if (seller.role !== Role.SELLER) {
       throw new NoPrivilegeGranted();
     }
+
+    const savedUrl = await this.fileRepository.save({
+      file: addBookCommand.file.image,
+      fileName:
+        this.dateProvider.getNow().getTime().toString() +
+        '-' +
+        addBookCommand.file.name,
+      saveDirectory: addBookCommand.file.saveDirectory,
+      mimetype: addBookCommand.file.mimetype,
+    });
+
     const book: Book = Book.fromData({
       id: addBookCommand.id,
       title: addBookCommand.title,
@@ -27,7 +40,7 @@ export class AddBookUseCase {
       publicationDate: addBookCommand.publicationDate,
       seller: addBookCommand.seller,
       description: addBookCommand.description,
-      imageUrl: addBookCommand.imageUrl,
+      imageUrl: savedUrl,
       createdAt: this.dateProvider.getNow(),
       published: false,
     });
@@ -41,7 +54,12 @@ export type AddBookCommand = {
   author: string;
   price: number;
   publicationDate: Date;
-  imageUrl: string;
   description: string;
   seller: string;
+  file: {
+    name: string;
+    mimetype: string;
+    image: Buffer;
+    saveDirectory: string;
+  };
 };

@@ -1,22 +1,27 @@
+import { FileRepository } from '../application/file.repository';
 import {
   AddBookCommand,
   AddBookUseCase,
 } from '../application/usecases/book/add-book.usecase';
 import { Book } from '../domain/book';
 import { InMemoryBookRepository } from '../infrastructure/in-memory-book.repository';
+import { InMemoryFileRepository } from '../infrastructure/in-memory-file.repository';
 import { InMemoryUserRepository } from '../infrastructure/in-memory-user.repository';
 import { StubDateProvider } from '../infrastructure/stub-date.provider';
 
 export const createBookFixture = ({
   userRepository = new InMemoryUserRepository(),
-}: { userRepository?: any } = {}) => {
+  fileRepository = new InMemoryFileRepository(),
+}: { userRepository?: any; fileRepository?: any } = {}) => {
   const bookRepository = new InMemoryBookRepository();
   const dateProvider = new StubDateProvider();
   const addBookUseCase = new AddBookUseCase(
     bookRepository,
     userRepository,
     dateProvider,
+    fileRepository,
   );
+
   let thrownError: Error | undefined;
 
   return {

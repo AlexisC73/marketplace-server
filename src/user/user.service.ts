@@ -9,7 +9,11 @@ import {
   UploadAvatarCommand,
   UploadAvatarUseCase,
 } from '@app/good-place/application/usecases/user/upload-avatar.usecase';
-import { SavedMultipartFile } from '@fastify/multipart';
+import {
+  MultipartFile,
+  MultipartValue,
+  SavedMultipartFile,
+} from '@fastify/multipart';
 import { PrismaService } from '@app/good-place/infrastructure/prisma/prisma.service';
 import { UpdateUserInfoDTO } from './dto/update-user-info.dto';
 import { UpdateUserInfoUseCase } from '@app/good-place/application/usecases/user/update-info.usecase';
@@ -24,6 +28,7 @@ import {
   SignupSellerCommand,
   SignupSellerUseCase,
 } from '@app/good-place/application/usecases/user/signup.seller.usecase';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UserService {
@@ -35,6 +40,7 @@ export class UserService {
     private readonly updateUserPasswordUseCase: UpdateUserPasswordUseCase,
     private readonly deleteAvatarUseCase: DeleteAvatarUseCase,
     private readonly signupSellerUseCase: SignupSellerUseCase,
+    private readonly configService: ConfigService,
   ) {}
 
   async signup({ name, email, password }: CreateUserDTO) {
@@ -55,7 +61,7 @@ export class UserService {
 
   async uploadAvatar(req: any) {
     try {
-      const file: SavedMultipartFile = await req.file();
+      const image = req.body.image[0];
       const user = req.user;
 
       if (!user?.id) {
@@ -64,14 +70,14 @@ export class UserService {
         );
       }
 
-      const extension = file.filename.split('.').pop();
+      const extension = image.filename.split('.').pop();
 
       const uploadAvatarCommand: UploadAvatarCommand = {
-        fileName: `avatar-${user.id}.${extension}`,
-        image: await file.toBuffer(),
-        mimetype: file.mimetype,
+        fileName: `${user.id}.${extension}`,
+        image: image.data,
+        mimetype: image.mimetype,
         userId: req.user.id,
-        saveDirectory: 'avatar',
+        saveDirectory: this.configService.get('DEFAULT_AVATAR_IMAGE_DIRECTORY'),
       };
 
       await this.uploadAvatarUseCase.handle(uploadAvatarCommand);

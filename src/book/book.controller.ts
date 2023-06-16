@@ -1,15 +1,13 @@
-import { Body, Controller, Delete, Param, Post, Req } from '@nestjs/common';
+import { Controller, Delete, Param, Post, Req } from '@nestjs/common';
 import { BookService } from './book.service';
-import { AddBookDTO } from './dto/add-book-dto';
-import { FastifyRequest } from 'fastify';
 
 @Controller('/book')
 export class BookController {
   constructor(private readonly bookService: BookService) {}
 
   @Post()
-  async addBook(@Body() addBookDTO: AddBookDTO, @Req() req: FastifyRequest) {
-    return this.bookService.add(addBookDTO, req);
+  async addBook(@Req() req: any) {
+    return this.bookService.add(req);
   }
 
   @Delete('/:id')

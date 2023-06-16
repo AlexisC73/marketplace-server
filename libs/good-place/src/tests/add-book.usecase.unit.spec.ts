@@ -1,6 +1,5 @@
-import { NoPrivilegeGranted } from '../application/usecases/error/error';
+import { Book } from '../domain/book';
 import { Role } from '../domain/user';
-import { bookBuilder } from './bookBuilder';
 import { BookFixture, createBookFixture } from './bookFixture';
 import { userBuilder } from './userBuilder';
 import { UserFixture, createUserFixture } from './userFixture';
@@ -12,69 +11,51 @@ describe('AddBookUseCase', () => {
     userFixture = createUserFixture();
     bookFixture = createBookFixture({
       userRepository: userFixture.userRepository,
+      fileRepository: userFixture.fileRepository,
     });
   });
 
-  it('should add a book', async () => {
-    bookFixture.givenNowIs(new Date('2023-06-01T12:00:00Z'));
-    userFixture.givenUserExist([
-      userBuilder()
+  describe('when a user add a book to sell', () => {
+    test('user can add a book to sell', async () => {
+      const user = userBuilder()
         .withName('Alice')
-        .withId('alice-seller-id')
         .withRole(Role.SELLER)
-        .build(),
-    ]);
+        .build();
+      const now = new Date('2020-01-01T00:00:00.000Z');
 
-    await bookFixture.whenAUserAddBook({
-      id: 'book-id',
-      title: 'The Lord of the Rings',
-      author: 'J. R. R. Tolkien',
-      price: 10,
-      publicationDate: new Date('1954-07-29T12:00:00Z'),
-      description: 'Description of the book',
-      imageUrl: 'http://testurl.com/',
-      seller: 'alice-seller-id',
-    });
-
-    bookFixture.thenBookShouldBe(
-      bookBuilder()
-        .withId('book-id')
-        .withTitle('The Lord of the Rings')
-        .withAuthor('J. R. R. Tolkien')
-        .withPrice(10)
-        .withPublicationDate(new Date('1954-07-29T12:00:00Z'))
-        .withDescription('Description of the book')
-        .withImageUrl('http://testurl.com/')
-        .withSeller('alice-seller-id')
-        .withPublished(false)
-        .withCreatedAt(new Date('2023-06-01T12:00:00Z'))
-        .build(),
-    );
-  });
-
-  describe('RULE: Only seller user can add a book', () => {
-    it('should add a book', async () => {
-      bookFixture.givenNowIs(new Date('2023-06-01T12:00:00Z'));
-      userFixture.givenUserExist([
-        userBuilder()
-          .withName('Alice')
-          .withId('alice-seller-id')
-          .withRole(Role.CLIENT)
-          .build(),
-      ]);
+      userFixture.givenUserExist([user]);
+      bookFixture.givenNowIs(now);
 
       await bookFixture.whenAUserAddBook({
-        id: 'book-id',
-        title: 'The Lord of the Rings',
-        author: 'J. R. R. Tolkien',
-        price: 10,
-        publicationDate: new Date('1954-07-29T12:00:00Z'),
-        description: 'Description of the book',
-        imageUrl: 'http://testurl.com/',
-        seller: 'alice-seller-id',
+        author: 'author',
+        description: 'description',
+        id: 'test-id',
+        price: 1000,
+        seller: user.id,
+        title: 'title',
+        publicationDate: new Date('2019-01-01T00:00:00.000Z'),
+        file: {
+          image: Buffer.from('image'),
+          mimetype: 'image/png',
+          name: 'test.png',
+          saveDirectory: 'test',
+        },
       });
 
-      bookFixture.thenErrorShouldBe(NoPrivilegeGranted);
+      bookFixture.thenBookShouldBe(
+        Book.fromData({
+          id: 'test-id',
+          title: 'title',
+          author: 'author',
+          price: 1000,
+          publicationDate: new Date('2019-01-01T00:00:00.000Z'),
+          seller: user.id,
+          description: 'description',
+          imageUrl: `test/${now.getTime().toString()}-test.png`,
+          createdAt: now,
+          published: false,
+        }),
+      );
     });
   });
 });

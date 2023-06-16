@@ -20,7 +20,7 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  app.register(FastifyMultipart);
+  app.register(FastifyMultipart, { addToBody: true });
   await app.listen(5500, process.env.LISTEN_URL ?? '127.0.0.1');
 }
 bootstrap();
