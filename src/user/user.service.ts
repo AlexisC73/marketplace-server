@@ -103,9 +103,7 @@ export class UserService {
         name: body.name,
       });
     } catch (err) {
-      throw new BadRequestException(
-        "An error occurred while updating user's info, please try again.",
-      );
+      throw new BadRequestException(err.message);
     }
   }
 
@@ -124,7 +122,7 @@ export class UserService {
 
       await this.updateUserPasswordUseCase.handle(updateUserPasswordCommand);
     } catch (err) {
-      throw new BadRequestException();
+      throw new BadRequestException(err.message);
     }
   }
 
@@ -136,7 +134,7 @@ export class UserService {
       }
       await this.deleteAvatarUseCase.handle({ userId: user.id });
     } catch (err) {
-      throw new BadRequestException();
+      throw new BadRequestException(err.message);
     }
   }
 

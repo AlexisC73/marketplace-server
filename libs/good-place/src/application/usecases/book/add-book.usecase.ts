@@ -17,9 +17,13 @@ export class AddBookUseCase {
   ) {}
 
   async handle(addBookCommand: AddBookCommand): Promise<void> {
+    const acceptedMimetypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (!acceptedMimetypes.includes(addBookCommand.file.mimetype)) {
+      throw new Error('Only jpeg, jpg, png are accepted.');
+    }
     const seller = await this.userRepository.findOneById(addBookCommand.seller);
     if (seller.role !== Role.SELLER) {
-      throw new NoPrivilegeGranted();
+      throw new NoPrivilegeGranted("You are not seller, you can't add book.");
     }
 
     const savedUrl = await this.fileRepository.save({
@@ -28,7 +32,7 @@ export class AddBookUseCase {
         this.dateProvider.getNow().getTime().toString() +
         '-' +
         addBookCommand.file.name,
-      saveDirectory: addBookCommand.file.saveDirectory,
+      saveDirectory: process.env.DEFAULT_BOOK_IMAGE_DIRECTORY ?? 'book',
       mimetype: addBookCommand.file.mimetype,
     });
 
@@ -60,6 +64,5 @@ export type AddBookCommand = {
     name: string;
     mimetype: string;
     image: Buffer;
-    saveDirectory: string;
   };
 };

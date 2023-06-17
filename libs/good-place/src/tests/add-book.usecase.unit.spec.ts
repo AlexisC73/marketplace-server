@@ -38,7 +38,6 @@ describe('AddBookUseCase', () => {
           image: Buffer.from('image'),
           mimetype: 'image/png',
           name: 'test.png',
-          saveDirectory: 'test',
         },
       });
 
@@ -51,7 +50,7 @@ describe('AddBookUseCase', () => {
           publicationDate: new Date('2019-01-01T00:00:00.000Z'),
           seller: user.id,
           description: 'description',
-          imageUrl: `test/${now.getTime().toString()}-test.png`,
+          imageUrl: `book/${now.getTime().toString()}-test.png`,
           createdAt: now,
           published: false,
         }),
