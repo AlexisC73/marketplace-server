@@ -1,4 +1,4 @@
-import { Role, User } from '../domain/user';
+import { Role, User } from '../domain/entity/user';
 import env from '../utils/env';
 
 export const userBuilder = ({

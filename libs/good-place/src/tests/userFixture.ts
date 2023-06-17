@@ -22,7 +22,7 @@ import {
   UploadAvatarCommand,
   UploadAvatarUseCase,
 } from '../application/usecases/user/upload-avatar.usecase';
-import { User } from '../domain/user';
+import { User } from '../domain/entity/user';
 import { InMemoryFileRepository } from '../infrastructure/in-memory-file.repository';
 import { InMemoryUserRepository } from '../infrastructure/in-memory-user.repository';
 import { StubDateProvider } from '../infrastructure/stub-date.provider';

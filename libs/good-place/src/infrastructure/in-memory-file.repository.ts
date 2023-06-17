@@ -1,5 +1,5 @@
 import { FileRepository } from '../application/file.repository';
-import { File } from '../domain/file';
+import { File } from '../domain/entity/file';
 import env from '../utils/env';
 
 export class InMemoryFileRepository implements FileRepository {

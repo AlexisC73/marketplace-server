@@ -3,7 +3,8 @@ import {
   AddBookCommand,
   AddBookUseCase,
 } from '../application/usecases/book/add-book.usecase';
-import { Book } from '../domain/book';
+import { GetPublishedBookUseCase } from '../application/usecases/book/get-published-book.usecase';
+import { Book } from '../domain/entity/book';
 import { InMemoryBookRepository } from '../infrastructure/in-memory-book.repository';
 import { InMemoryFileRepository } from '../infrastructure/in-memory-file.repository';
 import { InMemoryUserRepository } from '../infrastructure/in-memory-user.repository';
@@ -21,6 +22,11 @@ export const createBookFixture = ({
     dateProvider,
     fileRepository,
   );
+  const getAllPublishedBookUseCase = new GetPublishedBookUseCase(
+    bookRepository,
+  );
+
+  let books: Book[] = [];
 
   let thrownError: Error | undefined;
 
@@ -28,9 +34,19 @@ export const createBookFixture = ({
     givenNowIs: (_now: Date) => {
       dateProvider.now = _now;
     },
+    givenBooksExist(books: Book[]) {
+      bookRepository.givenBookExists(books);
+    },
     async whenAUserAddBook(addBookCommand: AddBookCommand) {
       try {
         await addBookUseCase.handle(addBookCommand);
+      } catch (err) {
+        thrownError = err;
+      }
+    },
+    async whenAUserGetPublishedBooks() {
+      try {
+        books = await getAllPublishedBookUseCase.handle();
       } catch (err) {
         thrownError = err;
       }
@@ -43,6 +59,9 @@ export const createBookFixture = ({
     },
     thenErrorShouldBe(expectedError: new () => Error) {
       expect(thrownError).toBeInstanceOf(expectedError);
+    },
+    thenBooksShouldBe(expectedBooks: Book[]) {
+      expect(books).toEqual(expectedBooks);
     },
   };
 };

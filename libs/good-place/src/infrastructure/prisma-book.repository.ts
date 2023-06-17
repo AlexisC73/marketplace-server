@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { BookRepository } from '../application/book.repository';
-import { Book } from '../domain/book';
+import { Book } from '../domain/entity/book';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
@@ -59,5 +59,28 @@ export class PrismaBookRepository implements BookRepository {
       seller: fundBook.sellerId,
       createdAt: fundBook.createdAt,
     });
+  }
+
+  async getPublishedBook(): Promise<Book[]> {
+    return (
+      await this.prisma.book.findMany({
+        where: {
+          published: true,
+        },
+      })
+    ).map((book) =>
+      Book.fromData({
+        id: book.id,
+        title: book.title,
+        author: book.author,
+        price: book.price,
+        imageUrl: book.imageUrl,
+        publicationDate: book.publicationDate,
+        description: book.description,
+        published: book.published,
+        seller: book.sellerId,
+        createdAt: book.createdAt,
+      }),
+    );
   }
 }

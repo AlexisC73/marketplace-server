@@ -12,7 +12,7 @@ import {
 import { promisify } from 'util';
 import { AppModule } from '../src/app.module';
 import { PrismaBookRepository } from '@app/good-place/infrastructure/prisma-book.repository';
-import { Book } from '@app/good-place/domain/book';
+import { Book } from '@app/good-place/domain/entity/book';
 import { PrismaUserRepository } from '@app/good-place/infrastructure/prisma-user.repository';
 import { Role, User } from '@app/good-place/domain/user';
 

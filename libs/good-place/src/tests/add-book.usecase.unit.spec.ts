@@ -1,5 +1,5 @@
-import { Book } from '../domain/book';
-import { Role } from '../domain/user';
+import { Book } from '../domain/entity/book';
+import { Role } from '../domain/entity/user';
 import { BookFixture, createBookFixture } from './bookFixture';
 import { userBuilder } from './userBuilder';
 import { UserFixture, createUserFixture } from './userFixture';

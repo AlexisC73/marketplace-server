@@ -1,4 +1,4 @@
-import { Book } from '../domain/book';
+import { Book } from '../domain/entity/book';
 
 export const bookBuilder = ({
   id = 'testing id',

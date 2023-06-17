@@ -1,4 +1,4 @@
-import { File } from '../domain/file';
+import { File } from '../domain/entity/file';
 import { InMemoryFileRepository } from '../infrastructure/in-memory-file.repository';
 
 export const createFileFixture = ({

@@ -2,7 +2,7 @@ import {
   UnauthorizedError,
   UserNotFoundError,
 } from '../application/usecases/error/error';
-import { User } from '../domain/user';
+import { User } from '../domain/entity/user';
 import { userBuilder } from './userBuilder';
 import { UserFixture, createUserFixture } from './userFixture';
 

@@ -8,7 +8,7 @@ import {
 
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { Book } from '../../domain/book';
+import { Book } from '../../domain/entity/book';
 
 const execAsync = promisify(exec);
 
@@ -95,39 +95,47 @@ describe('PrismaBookRepository', () => {
 
   it('deleteBook() should delete book in the database', async () => {
     const bookRepository = new PrismaBookRepository(prismaClient);
-    const book = bookBuilder()
-      .withId('prisma-id')
-      .withSeller(userId)
-      .build().data;
 
-    await prismaClient.book.create({
-      data: {
-        id: book.id,
-        title: book.title,
-        author: book.author,
-        price: book.price,
-        imageUrl: book.imageUrl,
-        publicationDate: book.publicationDate,
-        description: book.description,
-        published: book.published,
-        seller: {
-          connect: {
-            id: book.seller,
-          },
-        },
-        createdAt: book.createdAt,
-      },
-    });
+    const publishedBooks = [
+      bookBuilder().withPublished(true).withSeller(userId).withId('1').build(),
+      bookBuilder().withPublished(true).withSeller(userId).withId('2').build(),
+    ];
 
-    await bookRepository.deleteBookById('prisma-id');
+    const notPublishedBooks = [
+      bookBuilder().withPublished(false).withSeller(userId).withId('3').build(),
+      bookBuilder().withPublished(false).withSeller(userId).withId('4').build(),
+    ];
 
-    const searchBook = await prismaClient.book.findUnique({
-      where: {
-        id: 'prisma-id',
-      },
-    });
+    const allBooks = [...publishedBooks, ...notPublishedBooks];
 
-    expect(searchBook).toBeNull();
+    await Promise.all(
+      allBooks.map(
+        async (book) =>
+          await prismaClient.book.create({
+            data: {
+              id: book.id,
+              title: book.title,
+              author: book.author,
+              price: book.price,
+              imageUrl: book.imageUrl,
+              publicationDate: book.publicationDate,
+              description: book.description,
+              published: book.published,
+              seller: {
+                connect: {
+                  id: book.seller,
+                },
+              },
+              createdAt: book.createdAt,
+            },
+          }),
+      ),
+    );
+
+    const books = await bookRepository.getPublishedBook();
+
+    expect(books).toEqual(expect.arrayContaining(publishedBooks));
+    expect(books).toHaveLength(publishedBooks.length);
   });
 
   describe('getBookById()', () => {
@@ -167,5 +175,46 @@ describe('PrismaBookRepository', () => {
 
       expect(fundBook).toBeUndefined();
     });
+  });
+
+  it('getPublishedBooks() should get books if published in db', async () => {
+    const bookRepository = new PrismaBookRepository(prismaClient);
+
+    const book = bookBuilder()
+      .withId('prisma-id')
+      .withSeller(userId)
+      .withPublished(true)
+      .build();
+
+    await prismaClient.book.create({
+      data: {
+        id: book.id,
+        title: book.title,
+        author: book.author,
+        price: book.price,
+        imageUrl: book.imageUrl,
+        publicationDate: book.publicationDate,
+        description: book.description,
+        published: book.published,
+        seller: {
+          connect: {
+            id: book.seller,
+          },
+        },
+        createdAt: book.createdAt,
+      },
+    });
+
+    const fundBook = await bookRepository.getBookById('prisma-id');
+
+    expect(fundBook).toEqual(book);
+  });
+
+  it('getBookById() should return undefined if book not found', async () => {
+    const bookRepository = new PrismaBookRepository(prismaClient);
+
+    const fundBook = await bookRepository.getBookById('prisma-id');
+
+    expect(fundBook).toBeUndefined();
   });
 });

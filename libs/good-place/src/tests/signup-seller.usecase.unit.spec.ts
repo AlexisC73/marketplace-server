@@ -1,5 +1,5 @@
 import { BadRequestError } from '../application/usecases/error/error';
-import { Role } from '../domain/user';
+import { Role } from '../domain/entity/user';
 import { userBuilder } from './userBuilder';
 import { UserFixture, createUserFixture } from './userFixture';
 

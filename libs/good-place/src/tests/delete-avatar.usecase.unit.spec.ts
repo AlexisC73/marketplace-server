@@ -1,4 +1,4 @@
-import { User } from '../domain/user';
+import { User } from '../domain/entity/user';
 import env from '../utils/env';
 import { fileBuilder } from './fileBuilder';
 import { FileFixture, createFileFixture } from './fileFixture';

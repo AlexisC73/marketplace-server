@@ -1,5 +1,5 @@
 import { UserRepository } from '../application/user.repository';
-import { Role, User } from '../domain/user';
+import { Role, User } from '../domain/entity/user';
 
 export class InMemoryUserRepository implements UserRepository {
   users: User['data'][] = [];

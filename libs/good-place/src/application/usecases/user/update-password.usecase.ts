@@ -1,4 +1,4 @@
-import { User } from '@app/good-place/domain/user';
+import { User } from '@app/good-place/domain/entity/user';
 import { HashService } from '../../hash.service';
 import { UserRepository } from '../../user.repository';
 import { UnauthorizedError, UserNotFoundError } from '../error/error';

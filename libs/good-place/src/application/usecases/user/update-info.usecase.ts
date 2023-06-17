@@ -1,4 +1,4 @@
-import { User } from '@app/good-place/domain/user';
+import { User } from '@app/good-place/domain/entity/user';
 import { UserRepository } from '../../user.repository';
 import { Injectable } from '@nestjs/common';
 

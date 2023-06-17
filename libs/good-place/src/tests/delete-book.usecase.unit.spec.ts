@@ -1,5 +1,5 @@
 import { DeleteBookUseCase } from '../application/usecases/book/delete-book.usecase';
-import { Book } from '../domain/book';
+import { Book } from '../domain/entity/book';
 import { InMemoryBookRepository } from '../infrastructure/in-memory-book.repository';
 import { bookBuilder } from './bookBuilder';
 

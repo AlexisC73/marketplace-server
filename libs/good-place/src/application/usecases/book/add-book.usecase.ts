@@ -1,9 +1,9 @@
-import { Book } from '../../../domain/book';
+import { Book } from '../../../domain/entity/book';
 import { BookRepository } from '../../book.repository';
 import { DateProvider } from '../../date.provider';
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../../user.repository';
-import { Role } from '@app/good-place/domain/user';
+import { Role } from '@app/good-place/domain/entity/user';
 import { NoPrivilegeGranted } from '../error/error';
 import { FileRepository } from '../../file.repository';
 

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../../user.repository';
 import { UserNotFoundError } from '../error/error';
 import { FileRepository } from '../../file.repository';
-import { User } from '@app/good-place/domain/user';
+import { User } from '@app/good-place/domain/entity/user';
 import env from '@app/good-place/utils/env';
 
 @Injectable()
