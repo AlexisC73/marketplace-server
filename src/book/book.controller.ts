@@ -1,5 +1,6 @@
-import { Controller, Delete, Param, Post, Req } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Req } from '@nestjs/common';
 import { BookService } from './book.service';
+import { Public } from 'src/public.decorator';
 
 @Controller('/book')
 export class BookController {
@@ -8,6 +9,12 @@ export class BookController {
   @Post()
   async addBook(@Req() req: any) {
     return this.bookService.add(req);
+  }
+
+  @Public()
+  @Get()
+  async getPublishedBooks() {
+    return this.bookService.getPublishedBooks();
   }
 
   @Delete('/:id')
