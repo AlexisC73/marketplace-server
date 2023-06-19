@@ -46,7 +46,7 @@ export class AddBookUseCase {
       description: addBookCommand.description,
       imageUrl: savedUrl,
       createdAt: this.dateProvider.getNow(),
-      published: false,
+      published: true,
     });
     return this.bookRepository.addBook(book);
   }

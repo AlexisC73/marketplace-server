@@ -51,6 +51,9 @@ export class BookService {
   }
 
   async getPublishedBooks() {
-    return this.getPublishedBookUseCase.handle();
+    const books = (await this.getPublishedBookUseCase.handle()).map(
+      (book) => book.data,
+    );
+    return books;
   }
 }

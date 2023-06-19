@@ -52,7 +52,7 @@ describe('AddBookUseCase', () => {
           description: 'description',
           imageUrl: `book/${now.getTime().toString()}-test.png`,
           createdAt: now,
-          published: false,
+          published: true, //TODO: remettre sur false une fois la possibilité pour les admin de verifier les livres ajoutés.
         }),
       );
     });

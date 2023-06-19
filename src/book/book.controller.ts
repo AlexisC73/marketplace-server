@@ -1,6 +1,7 @@
 import { Controller, Delete, Get, Param, Post, Req } from '@nestjs/common';
 import { BookService } from './book.service';
 import { Public } from 'src/public.decorator';
+import { Book } from '@app/good-place/domain/entity/book';
 
 @Controller('/book')
 export class BookController {
@@ -13,7 +14,7 @@ export class BookController {
 
   @Public()
   @Get()
-  async getPublishedBooks() {
+  async getPublishedBooks(): Promise<Book['data'][]> {
     return this.bookService.getPublishedBooks();
   }
 
