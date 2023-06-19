@@ -1,4 +1,4 @@
-import { Book } from '../domain/entity/book';
+import { Book, BookStatus } from '../domain/entity/book';
 import { Role } from '../domain/entity/user';
 import { BookFixture, createBookFixture } from './bookFixture';
 import { userBuilder } from './userBuilder';
@@ -52,7 +52,7 @@ describe('AddBookUseCase', () => {
           description: 'description',
           imageUrl: `book/${now.getTime().toString()}-test.png`,
           createdAt: now,
-          published: true, //TODO: remettre sur false une fois la possibilité pour les admin de verifier les livres ajoutés.
+          status: BookStatus.FOR_SALE, //TODO: remettre sur false une fois la possibilité pour les admin de verifier les livres ajoutés.
         }),
       );
     });

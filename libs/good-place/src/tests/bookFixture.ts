@@ -3,7 +3,7 @@ import {
   AddBookCommand,
   AddBookUseCase,
 } from '../application/usecases/book/add-book.usecase';
-import { GetPublishedBookUseCase } from '../application/usecases/book/get-published-book.usecase';
+import { GetForSaleBooksUseCase } from '../application/usecases/book/get-published-book.usecase';
 import { Book } from '../domain/entity/book';
 import { InMemoryBookRepository } from '../infrastructure/in-memory-book.repository';
 import { InMemoryFileRepository } from '../infrastructure/in-memory-file.repository';
@@ -22,9 +22,7 @@ export const createBookFixture = ({
     dateProvider,
     fileRepository,
   );
-  const getAllPublishedBookUseCase = new GetPublishedBookUseCase(
-    bookRepository,
-  );
+  const getForSaleBooksUseCase = new GetForSaleBooksUseCase(bookRepository);
 
   let books: Book[] = [];
 
@@ -44,9 +42,9 @@ export const createBookFixture = ({
         thrownError = err;
       }
     },
-    async whenAUserGetPublishedBooks() {
+    async whenAUserGetForSaleBooks() {
       try {
-        books = await getAllPublishedBookUseCase.handle();
+        books = await getForSaleBooksUseCase.handle();
       } catch (err) {
         thrownError = err;
       }

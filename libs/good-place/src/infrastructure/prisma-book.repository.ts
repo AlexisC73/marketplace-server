@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { BookRepository } from '../application/book.repository';
-import { Book } from '../domain/entity/book';
+import { Book, BookStatus } from '../domain/entity/book';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class PrismaBookRepository implements BookRepository {
         imageUrl: book.imageUrl,
         publicationDate: book.publicationDate,
         description: book.description,
-        published: book.published,
+        status: book.status,
         seller: {
           connect: {
             id: book.seller,
@@ -55,20 +55,19 @@ export class PrismaBookRepository implements BookRepository {
       imageUrl: fundBook.imageUrl,
       publicationDate: fundBook.publicationDate,
       description: fundBook.description,
-      published: fundBook.published,
       seller: fundBook.sellerId,
       createdAt: fundBook.createdAt,
+      status: BookStatus[fundBook.status],
     });
   }
 
-  async getPublishedBook(): Promise<Book[]> {
-    return (
-      await this.prisma.book.findMany({
-        where: {
-          published: true,
-        },
-      })
-    ).map((book) =>
+  async getForSaleBooks(): Promise<Book[]> {
+    const fundBooks = await this.prisma.book.findMany({
+      where: {
+        status: BookStatus.FOR_SALE,
+      },
+    });
+    return fundBooks.map((book) =>
       Book.fromData({
         id: book.id,
         title: book.title,
@@ -77,7 +76,7 @@ export class PrismaBookRepository implements BookRepository {
         imageUrl: book.imageUrl,
         publicationDate: book.publicationDate,
         description: book.description,
-        published: book.published,
+        status: BookStatus[book.status],
         seller: book.sellerId,
         createdAt: book.createdAt,
       }),

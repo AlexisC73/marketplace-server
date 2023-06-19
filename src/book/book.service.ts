@@ -5,14 +5,14 @@ import {
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DeleteBookUseCase } from '@app/good-place/application/usecases/book/delete-book.usecase';
 import { createId } from '@paralleldrive/cuid2';
-import { GetPublishedBookUseCase } from '@app/good-place/application/usecases/book/get-published-book.usecase';
+import { GetForSaleBooksUseCase } from '@app/good-place/application/usecases/book/get-published-book.usecase';
 
 @Injectable()
 export class BookService {
   constructor(
     private readonly addBookUseCase: AddBookUseCase,
     private readonly deleteBookUseCase: DeleteBookUseCase,
-    private readonly getPublishedBookUseCase: GetPublishedBookUseCase,
+    private readonly getForSaleBooksUseCase: GetForSaleBooksUseCase,
   ) {}
 
   async add(req: any) {
@@ -51,7 +51,7 @@ export class BookService {
   }
 
   async getPublishedBooks() {
-    const books = (await this.getPublishedBookUseCase.handle()).map(
+    const books = (await this.getForSaleBooksUseCase.handle()).map(
       (book) => book.data,
     );
     return books;

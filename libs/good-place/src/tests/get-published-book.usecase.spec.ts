@@ -1,3 +1,4 @@
+import { BookStatus } from '../domain/entity/book';
 import { bookBuilder } from './bookBuilder';
 import { BookFixture, createBookFixture } from './bookFixture';
 
@@ -13,7 +14,7 @@ describe('GetPublishedBookUseCase', () => {
       bookBuilder()
         .withId('123')
         .withTitle('test-title')
-        .withPublished(true)
+        .withStatus(BookStatus.FOR_SALE)
         .build(),
     ];
 
@@ -21,12 +22,12 @@ describe('GetPublishedBookUseCase', () => {
       bookBuilder()
         .withId('124')
         .withTitle('test-title2')
-        .withPublished(false)
+        .withStatus(BookStatus.PENDING_VALIDATION)
         .build(),
     ];
     bookFixture.givenBooksExist([...publishedBooks, ...notPublishedBooks]);
 
-    await bookFixture.whenAUserGetPublishedBooks();
+    await bookFixture.whenAUserGetForSaleBooks();
 
     bookFixture.thenBooksShouldBe(publishedBooks);
   });

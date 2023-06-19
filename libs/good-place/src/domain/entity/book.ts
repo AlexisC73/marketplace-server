@@ -8,7 +8,7 @@ export class Book {
     private readonly _publicationDate: Date,
     private readonly _description: string,
     private readonly _createdAt: Date,
-    private readonly _published: boolean,
+    private readonly _status: BookStatus,
     private readonly _seller: string,
   ) {}
 
@@ -40,12 +40,12 @@ export class Book {
     return this._description;
   }
 
-  get createdAt(): Date {
+  get createdAt() {
     return this._createdAt;
   }
 
-  get published(): boolean {
-    return this._published;
+  get status(): BookStatus {
+    return this._status;
   }
 
   get seller(): string {
@@ -62,7 +62,7 @@ export class Book {
       publicationDate: this.publicationDate,
       description: this.description,
       createdAt: this.createdAt,
-      published: this.published,
+      status: this.status,
       seller: this.seller,
     };
   }
@@ -77,8 +77,14 @@ export class Book {
       data.publicationDate,
       data.description,
       data.createdAt,
-      data.published,
+      data.status,
       data.seller,
     );
   }
+}
+
+export enum BookStatus {
+  PENDING_VALIDATION = 'PENDING_VALIDATION',
+  FOR_SALE = 'FOR_SALE',
+  SOLD = 'SOLD',
 }

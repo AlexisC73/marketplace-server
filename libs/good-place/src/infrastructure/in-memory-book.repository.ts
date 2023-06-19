@@ -1,5 +1,5 @@
 import { BookRepository } from '../application/book.repository';
-import { Book } from '../domain/entity/book';
+import { Book, BookStatus } from '../domain/entity/book';
 
 export class InMemoryBookRepository implements BookRepository {
   book: Book['data'][] = [];
@@ -30,10 +30,10 @@ export class InMemoryBookRepository implements BookRepository {
     existingBooks.forEach(this.save.bind(this));
   }
 
-  getPublishedBook(): Promise<Book[]> {
-    const books = this.book.filter((book) => book.published);
-    return Promise.resolve(
-      this.book.filter((book) => book.published).map(Book.fromData),
+  getForSaleBooks(): Promise<Book[]> {
+    const books = this.book.filter(
+      (book) => book.status === BookStatus.FOR_SALE,
     );
+    return Promise.resolve(books.map((book) => Book.fromData(book)));
   }
 }

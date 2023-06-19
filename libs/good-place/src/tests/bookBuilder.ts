@@ -1,4 +1,4 @@
-import { Book } from '../domain/entity/book';
+import { Book, BookStatus } from '../domain/entity/book';
 
 export const bookBuilder = ({
   id = 'testing id',
@@ -10,7 +10,7 @@ export const bookBuilder = ({
   createdAt = new Date('2021-06-01T12:00:00Z'),
   imageUrl = 'testing url',
   seller = 'testing owner',
-  published = false,
+  status = BookStatus.PENDING_VALIDATION,
 }: {
   id?: string;
   title?: string;
@@ -21,7 +21,7 @@ export const bookBuilder = ({
   createdAt?: Date;
   imageUrl?: string;
   seller?: string;
-  published?: boolean;
+  status?: BookStatus;
 } = {}) => {
   const props: Book['data'] = {
     id,
@@ -33,7 +33,7 @@ export const bookBuilder = ({
     createdAt,
     imageUrl,
     seller,
-    published,
+    status,
   };
   return {
     withId: (id: string) => bookBuilder({ ...props, id }),
@@ -47,7 +47,7 @@ export const bookBuilder = ({
     withCreatedAt: (createdAt: Date) => bookBuilder({ ...props, createdAt }),
     withImageUrl: (imageUrl: string) => bookBuilder({ ...props, imageUrl }),
     withSeller: (seller: string) => bookBuilder({ ...props, seller }),
-    withPublished: (published: boolean) => bookBuilder({ ...props, published }),
+    withStatus: (status: BookStatus) => bookBuilder({ ...props, status }),
     build: (): Book => Book.fromData(props),
   };
 };

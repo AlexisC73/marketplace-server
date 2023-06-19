@@ -8,7 +8,7 @@ import {
 
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { Book } from '../../domain/entity/book';
+import { Book, BookStatus } from '../../domain/entity/book';
 
 const execAsync = promisify(exec);
 
@@ -83,7 +83,7 @@ describe('PrismaBookRepository', () => {
         imageUrl: book.imageUrl,
         publicationDate: book.publicationDate,
         description: book.description,
-        published: book.published,
+        status: BookStatus[book.status],
         seller: book.sellerId,
         createdAt: book.createdAt,
       }),
@@ -97,13 +97,29 @@ describe('PrismaBookRepository', () => {
     const bookRepository = new PrismaBookRepository(prismaClient);
 
     const publishedBooks = [
-      bookBuilder().withPublished(true).withSeller(userId).withId('1').build(),
-      bookBuilder().withPublished(true).withSeller(userId).withId('2').build(),
+      bookBuilder()
+        .withStatus(BookStatus.FOR_SALE)
+        .withSeller(userId)
+        .withId('1')
+        .build(),
+      bookBuilder()
+        .withStatus(BookStatus.FOR_SALE)
+        .withSeller(userId)
+        .withId('2')
+        .build(),
     ];
 
     const notPublishedBooks = [
-      bookBuilder().withPublished(false).withSeller(userId).withId('3').build(),
-      bookBuilder().withPublished(false).withSeller(userId).withId('4').build(),
+      bookBuilder()
+        .withStatus(BookStatus.PENDING_VALIDATION)
+        .withSeller(userId)
+        .withId('3')
+        .build(),
+      bookBuilder()
+        .withStatus(BookStatus.PENDING_VALIDATION)
+        .withSeller(userId)
+        .withId('4')
+        .build(),
     ];
 
     const allBooks = [...publishedBooks, ...notPublishedBooks];
@@ -120,7 +136,7 @@ describe('PrismaBookRepository', () => {
               imageUrl: book.imageUrl,
               publicationDate: book.publicationDate,
               description: book.description,
-              published: book.published,
+              status: book.status,
               seller: {
                 connect: {
                   id: book.seller,
@@ -132,7 +148,7 @@ describe('PrismaBookRepository', () => {
       ),
     );
 
-    const books = await bookRepository.getPublishedBook();
+    const books = await bookRepository.getForSaleBooks();
 
     expect(books).toEqual(expect.arrayContaining(publishedBooks));
     expect(books).toHaveLength(publishedBooks.length);
@@ -153,7 +169,7 @@ describe('PrismaBookRepository', () => {
           imageUrl: book.imageUrl,
           publicationDate: book.publicationDate,
           description: book.description,
-          published: book.published,
+          status: book.status,
           seller: {
             connect: {
               id: book.seller,
@@ -183,7 +199,7 @@ describe('PrismaBookRepository', () => {
     const book = bookBuilder()
       .withId('prisma-id')
       .withSeller(userId)
-      .withPublished(true)
+      .withStatus(BookStatus.FOR_SALE)
       .build();
 
     await prismaClient.book.create({
@@ -195,7 +211,7 @@ describe('PrismaBookRepository', () => {
         imageUrl: book.imageUrl,
         publicationDate: book.publicationDate,
         description: book.description,
-        published: book.published,
+        status: book.status,
         seller: {
           connect: {
             id: book.seller,

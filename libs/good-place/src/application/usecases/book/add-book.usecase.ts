@@ -1,4 +1,4 @@
-import { Book } from '../../../domain/entity/book';
+import { Book, BookStatus } from '../../../domain/entity/book';
 import { BookRepository } from '../../book.repository';
 import { DateProvider } from '../../date.provider';
 import { Injectable } from '@nestjs/common';
@@ -46,7 +46,7 @@ export class AddBookUseCase {
       description: addBookCommand.description,
       imageUrl: savedUrl,
       createdAt: this.dateProvider.getNow(),
-      published: true,
+      status: BookStatus.FOR_SALE,
     });
     return this.bookRepository.addBook(book);
   }
