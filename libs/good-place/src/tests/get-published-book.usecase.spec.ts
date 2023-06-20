@@ -2,14 +2,14 @@ import { BookStatus } from '../domain/entity/book';
 import { bookBuilder } from './bookBuilder';
 import { BookFixture, createBookFixture } from './bookFixture';
 
-describe('GetPublishedBookUseCase', () => {
+describe('GetForSaleBooksUseCase', () => {
   let bookFixture: BookFixture;
 
   beforeEach(() => {
     bookFixture = createBookFixture();
   });
 
-  test('a user can get all published books', async () => {
+  test('a user can get all for sale books', async () => {
     const publishedBooks = [
       bookBuilder()
         .withId('123')
@@ -29,6 +29,6 @@ describe('GetPublishedBookUseCase', () => {
 
     await bookFixture.whenAUserGetForSaleBooks();
 
-    bookFixture.thenBooksShouldBe(publishedBooks);
+    bookFixture.thenReturnBooksShouldBe(publishedBooks);
   });
 });

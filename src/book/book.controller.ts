@@ -18,6 +18,12 @@ export class BookController {
     return this.bookService.getPublishedBooks();
   }
 
+  @Public()
+  @Get('/:id')
+  async getForSaleBook(@Param('id') id: string): Promise<Book['data']> {
+    return this.bookService.getForSaleBook(id);
+  }
+
   @Delete('/:id')
   async deleteBook(@Param('id') id: string) {
     return this.bookService.delete(id);

@@ -6,6 +6,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { DeleteBookUseCase } from '@app/good-place/application/usecases/book/delete-book.usecase';
 import { createId } from '@paralleldrive/cuid2';
 import { GetForSaleBooksUseCase } from '@app/good-place/application/usecases/book/get-published-book.usecase';
+import { GetForSaleBookUseCase } from '@app/good-place/application/usecases/book/get-for-sale-book.usecase';
 
 @Injectable()
 export class BookService {
@@ -13,6 +14,7 @@ export class BookService {
     private readonly addBookUseCase: AddBookUseCase,
     private readonly deleteBookUseCase: DeleteBookUseCase,
     private readonly getForSaleBooksUseCase: GetForSaleBooksUseCase,
+    private readonly getForSaleBookUseCase: GetForSaleBookUseCase,
   ) {}
 
   async add(req: any) {
@@ -55,5 +57,17 @@ export class BookService {
       (book) => book.data,
     );
     return books;
+  }
+
+  async getForSaleBook(id: string) {
+    try {
+      const book = await this.getForSaleBookUseCase.handle({ bookId: id });
+      if (!book) {
+        throw new BadRequestException('Book not found');
+      }
+      return book.data;
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 }

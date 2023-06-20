@@ -3,6 +3,10 @@ import {
   AddBookCommand,
   AddBookUseCase,
 } from '../application/usecases/book/add-book.usecase';
+import {
+  GetForSaleBookCommand,
+  GetForSaleBookUseCase,
+} from '../application/usecases/book/get-for-sale-book.usecase';
 import { GetForSaleBooksUseCase } from '../application/usecases/book/get-published-book.usecase';
 import { Book } from '../domain/entity/book';
 import { InMemoryBookRepository } from '../infrastructure/in-memory-book.repository';
@@ -23,8 +27,10 @@ export const createBookFixture = ({
     fileRepository,
   );
   const getForSaleBooksUseCase = new GetForSaleBooksUseCase(bookRepository);
+  const getForSaleBookUseCase = new GetForSaleBookUseCase(bookRepository);
 
   let books: Book[] = [];
+  let book: Book;
 
   let thrownError: Error | undefined;
 
@@ -34,6 +40,9 @@ export const createBookFixture = ({
     },
     givenBooksExist(books: Book[]) {
       bookRepository.givenBookExists(books);
+    },
+    async whenGetAForSaleBook(getForSaleBookCommand: GetForSaleBookCommand) {
+      book = await getForSaleBookUseCase.handle(getForSaleBookCommand);
     },
     async whenAUserAddBook(addBookCommand: AddBookCommand) {
       try {
@@ -49,6 +58,9 @@ export const createBookFixture = ({
         thrownError = err;
       }
     },
+    thenReturnBookShouldBe(expectedBook: Book) {
+      expect(book).toEqual(expectedBook);
+    },
     thenBookShouldBe(expectedBook: Book) {
       const inDbBook = bookRepository.book.find(
         (b) => b.id === expectedBook.id,
@@ -58,7 +70,7 @@ export const createBookFixture = ({
     thenErrorShouldBe(expectedError: new () => Error) {
       expect(thrownError).toBeInstanceOf(expectedError);
     },
-    thenBooksShouldBe(expectedBooks: Book[]) {
+    thenReturnBooksShouldBe(expectedBooks: Book[]) {
       expect(books).toEqual(expectedBooks);
     },
   };

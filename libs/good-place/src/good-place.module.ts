@@ -14,6 +14,7 @@ import { UpdateUserPasswordUseCase } from './application/usecases/user/update-pa
 import { DeleteAvatarUseCase } from './application/usecases/user/delete-avatar.usecase';
 import { SignupSellerUseCase } from './application/usecases/user/signup.seller.usecase';
 import { GetForSaleBooksUseCase } from './application/usecases/book/get-published-book.usecase';
+import { GetForSaleBookUseCase } from './application/usecases/book/get-for-sale-book.usecase';
 
 @Global()
 @Module({
@@ -41,6 +42,7 @@ export class GoodPlaceModule {
         DeleteAvatarUseCase,
         SignupSellerUseCase,
         GetForSaleBooksUseCase,
+        GetForSaleBookUseCase,
         { provide: BookRepository, useClass: providers.BookRepository },
         { provide: PrismaClient, useClass: providers.PrismaClient },
         { provide: DateProvider, useClass: providers.DateProvider },
@@ -58,6 +60,7 @@ export class GoodPlaceModule {
         DeleteAvatarUseCase,
         SignupSellerUseCase,
         GetForSaleBooksUseCase,
+        GetForSaleBookUseCase,
       ],
     };
   }
